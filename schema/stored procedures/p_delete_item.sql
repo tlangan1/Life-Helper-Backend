@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_delete_item;
 
 DELIMITER //
-CREATE PROCEDURE p_delete_item(IN data varchar(1000), IN type varchar(20))
+CREATE PROCEDURE p_delete_item(IN type varchar(20), IN data varchar(1000))
 BEGIN
 	CASE type
 		WHEN "objective" THEN
