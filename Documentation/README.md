@@ -1,9 +1,13 @@
 # Life Helper Application
 
+## Notes:
+
+1. I used the regex find pattern "[0-9]+\. \* \[ \]" to replace all occurrences of numbered checkboxes with hyphen checkboxes. The replacement pattern was "- [ ]"
+
 ## Diagrams
 
-
 ### Web Push Subscription Process
+
 ```mermaid
   graph TD;
       A[<h2>Browser</h2> <br />  Ask the user if they would like web pushes]-- No -->B[Refresh data by calling the server on every action];
@@ -13,6 +17,7 @@
 ```
 
 ### Web Push Process
+
 ```mermaid
   graph TD;
       A[<h2>Browser</h2> <br />  A user alters data that is time sensitive <br /> for other users such as starting a task.]-- Send data change to web server endpoint -->B[<h2> Web Server </h2>];
@@ -23,6 +28,7 @@
       E-- For each subscription push update to capability url -->F[<h2>Push Service Used By Browser</h2>];
       F-- Each web push goes to a browser <br /> which is passed to a service worker -->A
 ```
+
 ## Architecture
 
 1. The back end of the application is composed of an Express web server with endpoints that enable the front end to read from and write data to a MySQL database. This application is located at D:\Computer Science\Original Applications\Express Server.
@@ -30,28 +36,48 @@
 1. The documentation and schema for the application are located at D:\Computer Science\Original Applications\Life Helper Docs and Schema.
 
 ### Back End
+
 1. Each end point is handled by a branch of code in `server.js`. These endpoints are of the form .../get/[item name], .../add/[item name], .../delete/[item name] and .../update/[item name].
 1. Each endpoint maps to a database call in `db.js`. Each database call is handled by a stored procedure in the database.
 1. Note that the database deletes are actually just logical deletes where the deleted_dtm column of a given item is updated to the current date time.
 
 ### TODOs
 
-#### Page title
+#### Completed
 
-1. [x] For objectives page should be upper case O `Objectives`.
-1. [x] For Goals page should be `Goals for [objective name]`.
-1. [x] For Tasks page should be `Tasks for [goal name]`.
+- [x] Determine if the <!--- cspell:disable --> `pushsubscriptionchange` event
+      is fired when the user unregisters <!--- cspell:enable --> the web push notification. IT DOES NOT.
+- [x] For objectives page should be upper case O `Objectives`.
+- [x] For Goals page should be `Goals for [objective name]`.
+- [x] For Tasks page should be `Tasks for [goal name]`.
+- [x] Provide a way to move up the Objective/Goal/Task stack.
+- [x] Incorporate the service worker into the Life Helper app.
+- [x] Send a web push notification from the Express Server app when a task is added.
+- [x] Set web push subscription expired_dtm column to the current datetime if a 410 is received from the web push service.
+- [x] Change `push_subscription` nomenclature to `web_push_subscription`
+- [x] Change `notification` nomenclature to `web_push`.
+- [x] Fold `p_save_push_subscription` into `p_add_items`.
+- [x] default focus to add text box
+- [x] Remove delete_type from object passed to deleteItem in sendWebPush error branch.
+- [x] Replace unsubscribed_dtm and expired_dtm columns in web_push_subscription with a single column called unsubscribed_or_expired_dtm.
+- [x] Alter p_delete_item to reflect this change.
+- [x] Do not push to subscriptions which are no longer valid.
+- [x] Only web push when an item is added or started.
+- [x] Remove the Un-register button from the final version of the application.
 
-#### Navigation
+#### Currently Being Implemented
 
-1. [x] Provide a way to move up the Objective/Goal/Task stack.
+#### Yet To Be Implemented
 
-#### More TODOs...
-
-1. [ ] default focus to add text box
-2. [ ] Incorporate the service worker into the Life Helper app. Default to asking the user to accept. If they do not provide permission then have the app reload all items on each update, otherwise, use the service worker to keep the data fresh. Note how [Pushpad](https://pushpad.xyz/blog/web-push-error-410-the-push-subscription-has-expired-or-the-user-has-unsubscribed) does it. Soon after you open this page a non-modal dialog appears asking the viewer if they would like to stay informed about Pushpad through notifications. 
-3. [ ] Get data from database to drive pushes in the Express Server app.
-4. [ ] Remove a web push from the database if a 410 is received from web push service.
-5. [x] Change `push_subscription` nomenclature to `web_push_subscription`
-6. [ ] Change `notification` nomenclature to `web_push`.
-7. [ ] Fold `p_save_push_subscription` into `p_add_items`. 
+- [ ] Put an expiration date on the web push subscriptions.
+- [ ] Engineer a way to distribute the IP address to use across the three pieces of the application, the app itself, the express server and the service worker.
+- [ ] Write code to handle <!--- cspell:disable --> pushsubscriptionchange <!--- cspell:enable --> event in service worker. I
+      can test this by making the expiration date just a few minutes in the future.
+- [ ] When a service worker is un-registered it should be marked as such by setting the “unregistered_dtm” column value to the current datetime. Test this by using the application to unregister the service worker.
+- [ ] Use <!--- cspell:disable --> [Pushpad](https://pushpad.xyz/blog/web-push-error-410-the-push-subscription-has-expired-or-the-user-has-unsubscribed) as an example of how to engineer the service worker experience. Soon after you open this page a non-modal dialog appears asking the viewer if they would like to stay informed about Pushpad through notifications. Note, I placed the pushpad.js file, the file that appears to wrap all this functionaity, in the same directory as this document. See the code I added to index.js async function requestNotificationPermission() to see if I can customize the notification permission request message when I create a new subscription. <!--- cspell:enable -->
+- [ ] Engineer the experience of the broader application if the user `does not` accept push notifications.
+- [ ] Engineer the experience of the broader application if the user `does` accept push notifications.
+- [ ] When the application receives a web push notification about a task being added it should respond by adding the task to the cache or other persistent storage such as indexed database, etc. See the [Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API) for information about the options.
+- [ ] Experiment with the Vite proxy server to get around CORS issues.
+- [ ] It would be nice if the app and the service worker adjusted the IP address to match the current “Wireless LAN adapter Wi-Fi” IP address.
+- [ ] Look at Github repos <!--- cspell:disable --> “sw-precache” <!--- cspell:enable --> and “offline-plugin”. See this for the links and other info.

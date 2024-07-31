@@ -14,10 +14,15 @@ create table web_push_subscription (
 	public_key varchar(100) not null,
 	private_key varchar(100) not null,
 	subscribed_dtm datetime default current_timestamp not null,
-    unsubscribed_dtm datetime null,
-    expired_dtm datetime null,
+    unsubscribed_or_expired_dtm datetime null,
 	PRIMARY KEY (web_push_subscription_id)
 );
 
 -- Note, this code is unique to the exact change being implemented.
-insert into web_push_subscription select *, Null from t_web_push_subscription;
+insert into web_push_subscription select web_push_subscription_id
+	, capability_url
+    , public_key
+    , private_key
+    , subscribed_dtm
+    , Null
+from t_web_push_subscription;
