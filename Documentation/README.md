@@ -46,10 +46,18 @@
 ### Currently Being Implemented
 
 - [ ] Replace the item text box with an "Add [a/an] [Objective/Goal/Task]" label/link". Focus no longer makes sense. See the "Add a comment" link [here](https://ux.stackexchange.com/questions/149929/text-box-max-character-limit-best-practice) as well as the question and associated answer. Create a modal solution which provides the user with two input controls. One to enter the item label and one to enter the item description. See the docs for the [Portal component](https://docs.solidjs.com/reference/components/portal#lessportalgreater). Make this a component and call it AddItem.
-- [ ] Push this version to Github
+  - [x] Before proceeding change objective-goal-task.jsx to ProjectItem.jsx and change the component name from ItemFromImport to ProjectItem.
+  - [x] Before proceeding stop prop drilling dataServer. Instead, use the GlobalState component wherever needed.
+  - [x] Before proceeding put the refreshData and setRefreshData in the GlobalState component.
+  - [x] Use the `data-` preface when adding any attributes to an html element.
+  - [x] Do not use the event object in the function affectItem to obtain the values to be passed to the database. Instead, pass an object called `data` as a parameter. Note that this change affects this component, AddItem, and also affects the ProjectItem component.
+    - [x] Implement `add` in AddItem component
+    - [x] Change `start` and `delete` in ProjectItem component.
+- [x] Push this version to Github
 
 ### Yet To Be Implemented
 
+- [ ] Escape quotes in strings when inserting or updating data.
 - [ ] Complete "Testing" section of this document
 - [ ] Make Life Helper my signature app. The one that `boldly goes where only a few hundred million have gone before.`
 - [ ] Consider changing its name to multi-user task management app leveraging push technology for time sensitive updates.
