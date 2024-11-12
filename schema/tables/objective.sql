@@ -1,12 +1,6 @@
 -- Every objective contains a collection of goals
 -- Every goal contains a collection of tasks
 
-drop table if exists t_objective;
-
-create table t_objective as select * from objective;
-
-alter table goal drop foreign key goal_ibfk_1;
-
 drop table IF EXISTS objective;
 
 create table objective (
@@ -20,8 +14,6 @@ create table objective (
 	last_update_dtm datetime on update current_timestamp,
 	PRIMARY KEY (objective_id)
 );
-
-alter table goal add foreign key fk_objective(objective_id) references objective(objective_id);
 
 -- Note, this code is unique to the exact change being implemented.
 -- Since I am testing this script without making any changes to the structure
