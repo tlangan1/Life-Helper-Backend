@@ -43,21 +43,17 @@
 - [x] Put the project in the "Github Page Data Access Test" folder on Github and test the Github page generated. I have determined that MongoDB can serve as an online database with which to host the application on Github Pages. See [this](https://www.mongodb.com/docs/atlas/app-services/data-api/authenticate/#std-label-data-api-bearer-authentication) for a detailed explanation of the use of the "Bearer" Authentication header to enable CORS requests to MongoDB. This type of authentication is known as JSON Web Tokens or just JWT as explained [here](https://jwt.io/introduction/).
 - [x] Obfuscate the user access token and the use of the refresh access token request to re-enable the user access token. See if this passes muster in Github/Github pages.
 - [x] Get rid of all the node modules folders. They can be replaced with the `npm ci` command when needed.
+- [x] Convert the `AWS RDS database creation 9-25-2024` to a markdown file.
 
 ### Currently Being Implemented TODOs
 
-- [ ] `DO THIS LOCALLY AND THEN TEST ON THE AWS RDS INSTANCE`: Reengineer the table creation scripts to avoid placing archiving and foreign key creation code in the individual table scripts. These scripts should create the table structure and nothing else. Create a wrapper schema change script, or possibly stored procedure, that first archives the data by calling `scripts/remove_data.sql` and the calls the appropriate DDL scripts
-- [x] Convert the `AWS RDS database creation 9-25-2024` to a markdown file.
-- [ ] Implement the Life Helper schema in AWS [RDB](https://us-east-1.console.aws.amazon.com/rds/home?region=us-east-1).
-  - [x] Started 9/25/2024 at 10:47AM
-  - [ ] Document the creation of this database in the AWS folder in a subfolder called `RDS database creation 9-25-2024`.
-  - [ ] Use [this](https://duckduckgo.com/?q=how+to+use+AWS+secrets+for+a+RDS+database+call+from+an+S3+application&iax=videos&ia=videos&iai=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DNg_zi11N4_c) as a guide.
-- [x] See if I can use a local version of the app to interact with the AWS RDS.
-- [ ] Deploy the current version of the App to S3
-- [ ] Enable the app to interact with this database.
+- [ ] Render the completed TODOs as a requirements document
+- [ ] Create a list of `Yet To Be Implemented TODOs` to create the minimal version of the application to demonstrate mastery of the the PWA & Caching as well as Push.
 
 ### Yet To Be Implemented TODOs
 
+- [ ] `DO THIS LOCALLY AND THEN TEST ON THE AWS RDS INSTANCE`: Reengineer the table creation scripts to avoid placing archiving and foreign key creation code in the individual table scripts. These scripts should create the table structure and nothing else. Create a wrapper schema change script, or possibly stored procedure, that first archives the data by calling `scripts/remove_data.sql` and the calls the appropriate DDL scripts
+- [ ] Express Server is sending pushes twice...it should only do a push once.
 - [ ] Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
 - [ ] I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
 - [ ] All the data required by the interface should be cached. The service worker should update the cache when a push is received. Pushes should be restricted to time sensitive data changes like the starting of a task. If a user goes offline they should not be allowed to start a new task. If this were allowed then it could be the case that several users start the same task which should not be allowed.
@@ -84,3 +80,11 @@
 - Multi-user considerations
   - [ ] Prevent two users from starting the same task.
   - [ ] When working offline, do not allow a user to start a task but do allow them to work on it and complete it.
+  - [ ]
+
+### Future
+
+- [ ] Move Life Helper to AWS
+  - [ ] Implement the Life Helper schema in AWS [RDB](https://us-east-1.console.aws.amazon.com/rds/home?region=us-east-1).
+    - [ ] Document the creation of this database in the AWS folder in a subfolder called `RDS database creation 9-25-2024`.
+    - [ ] Use [this](https://duckduckgo.com/?q=how+to+use+AWS+secrets+for+a+RDS+database+call+from+an+S3+application&iax=videos&ia=videos&iai=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DNg_zi11N4_c) as a guide.
