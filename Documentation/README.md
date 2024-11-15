@@ -3,28 +3,15 @@
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
-- [Notes:](#notes)
-- [Testing](#testing)
 - [Diagrams](#diagrams)
   - [Web Push Subscription Process](#web-push-subscription-process)
   - [Web Push Process](#web-push-process)
 - [Architecture](#architecture)
-  - [Future AWS Implementation](#future-aws-implementation)
   - [Back End](#back-end)
-  - [Installation of Root CA Created on the Linux Machine into Chrome on Windows](#installation-of-root-ca-created-on-the-linux-machine-into-chrome-on-windows)
-  - [Network Configuration in Lieu of DNS](#network-configuration-in-lieu-of-dns)
-  - [Switch Between Previously Used Networks](#switch-between-previously-used-networks)
+  - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
-
-## Notes:
-
-- On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
-- Use the command `arp -a` to view all devices on the local network.
-- I used the regex find pattern "[0-9]+\. \* \[ \]" to replace all occurrences of numbered checkboxes with hyphen checkboxes. The replacement pattern was "- [ ]"
-- The expiration date on web push subscriptions is determined by the subscription service.
-- [This](https://curlconverter.com/javascript/) is a great resource to convert curl commands to fetch API in JavaScript.
-
-## Testing
+  - [Future AWS Implementation](#future-aws-implementation)
+- [Personal Notes](#personal-notes)
 
 ## Diagrams
 
@@ -56,18 +43,13 @@
 - The back end of the application is composed of an ExpressJS web server and a MySQL database server. For local development purposes they run on the same machine. The ExpressJS server provides https routes that the front end running in the browser can use to read from and write data from and to the database.
 - The front end web server is a SolisJS based web application running on a Vite server.
 
-### Future AWS Implementation
-
-- I am considering [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html) AWS cloud based database solution.
-- [Here](https://medium.com/@t.unamka/connecting-to-an-rds-or-aurora-instance-in-a-private-subnet-using-a-jump-box-bastion-host-ba6201464b73) is a link that provides some relevant information concerning the AWS architecture.
-
 ### Back End
 
 - Each data end point is handled by a branch of code in `server.js`. These endpoints are of the form .../get/[item name], .../add/[item name], .../delete/[item name] and .../update/[item name].
 - Each data endpoint maps to a database call in `db.js`. Each database call is handled by a stored procedure in the database.
 - Note that the database deletes are actually just logical deletes where the deleted_dtm column of a given item is updated to the current date time.
 
-### Installation of Root CA Created on the Linux Machine into Chrome on Windows
+### Root CA Management
 
 - I created a root CA certificates for both the windows machine and the linux machine using `mkcert` using the following command:
   ```
@@ -85,29 +67,6 @@
     - Go to Settings --> Security and privacy --> More security settings --> Install from phone storage --> CA certificate and click the `Install Anyway` button. Enter a PIN if necessary and then click the "Downloads" folder and select the certificate file.
 - If the front end web server is running on the linux machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine. Likewise, if the front end web server is running on the windows machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine.
 
-### Network Configuration in Lieu of DNS
-
-- Without DNS there are several hardcoded configuration values that need to be addressed.
-
-- Express server:
-  - The IP address and port to which the web server is listening needs to be put in the config file config.json.
-    > "web_server_url": "https://192.168.1.164:3000"
-- Application server:
-  - The IP address and port to which the Express server is listening needs to be put in GlobalStateProvider.jsx.
-- Service worker:
-  - The IP address and port to which the Express server is listening on is provided to the service worker by the client, the web page, when needed. The only purpose the service worker currently has for this information is to log a web push subscription in the database. When the client, the web page, requests the service worker to do this it does so in a message that contains the relevant IP address and port.
-
-### Switch Between Previously Used Networks
-
-There should be nothing to do unless the router decides to assign a new IP address to my laptop's Wi-Fi adapter.
-
-- Express server:
-  - The Express server detects the "Wi-Fi" address and uses the security certificate in the cert folder whose name matches the IP address.
-- Application server:
-  - The domain in GlobalStateProvider.jsx is hardcoded to the IP address port 3001.
-- Service worker:
-  - The domain is derived from event.target.registration.scope and data access is then sent to that domain on port 3001.
-
 ### Configure an environment
 
 - This configuration assumes there is no DNS resolution.
@@ -118,3 +77,18 @@ There should be nothing to do unless the router decides to assign a new IP addre
   mkcert [some IP address like 123.456.7891]
   ```
   Now make sure the files have the same name as the IP address, in this case 123.456.7891 and put them in the cert folder.
+- Service worker:
+  - The IP address and port to which the Express server is listening on is provided to the service worker by the client, the web page, when needed. The only purpose the service worker currently has for this information is to log a web push subscription in the database. When the client, the web page, requests the service worker to do this it does so in a message that contains the relevant IP address and port.
+
+### Future AWS Implementation
+
+- I am considering [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html) AWS cloud based database solution.
+- [Here](https://medium.com/@t.unamka/connecting-to-an-rds-or-aurora-instance-in-a-private-subnet-using-a-jump-box-bastion-host-ba6201464b73) is a link that provides some relevant information concerning the AWS architecture.
+
+## Personal Notes
+
+- On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
+- Use the command `arp -a` to view all devices on the local network.
+- I used the regex find pattern "[0-9]+\. \* \[ \]" to replace all occurrences of numbered checkboxes with hyphen checkboxes. The replacement pattern was "- [ ]"
+- The expiration date on web push subscriptions is determined by the subscription service.
+- [This](https://curlconverter.com/javascript/) is a great resource to convert curl commands to fetch API in JavaScript.
