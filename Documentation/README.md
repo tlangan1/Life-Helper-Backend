@@ -3,15 +3,21 @@
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Issues](#issues)
 - [Diagrams](#diagrams)
   - [Web Push Subscription Process](#web-push-subscription-process)
   - [Web Push Process](#web-push-process)
 - [Architecture](#architecture)
   - [Back End](#back-end)
+  - [Database](#database)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
 - [Personal Notes](#personal-notes)
+
+## Issues
+
+- Line feeds in text areas such as the item description cause `ER_INVALID_JSON_TEXT_IN_PARAM: Invalid JSON text..."Invalid encoding in string." at position...`. I may want to handle the insertion and update of this type of value outside the JSON structure or just remove each line feed and replace it with a space.
 
 ## Diagrams
 
@@ -48,6 +54,24 @@
 - Each data end point is handled by a branch of code in `server.js`. These endpoints are of the form .../get/[item name], .../add/[item name], .../delete/[item name] and .../update/[item name].
 - Each data endpoint maps to a database call in `db.js`. Each database call is handled by a stored procedure in the database.
 - Note that the database deletes are actually just logical deletes where the deleted_dtm column of a given item is updated to the current date time.
+
+### Database
+
+- `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
+  - I created a stored procedure to remove the foreign keys called `p_drop_all_foreign_keys.sql`. I think this is a tool I may need to use when doing database upgrades but wanting to retain existing data.
+  - I created an analog for the indexes but I do not think it will be used. I did it as an exercise. The stored procedure is called `p_drop_all_non_primary_indexes`
+- `Logging SQL Errors:` There is an entity called sql_error which initially is being used by p_drop_index to persist sql errors.
+  - All stored procedures should contain an error handler that captures all exceptions. This is the syntax for that:
+    ```
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+        BEGIN
+        ...
+        rollback; /* If there is a transaction involved */
+        insert into sql_error...
+        END
+    ```
+    This design should ensure that no database errors are returned to the application.
+  - In the event that a database error occurs the Express server should return a `soft` message to the application indicating that something went wrong and that the user should try the operation again and that if it still fails, register a complaint.
 
 ### Root CA Management
 
@@ -89,6 +113,33 @@
 
 - On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
 - Use the command `arp -a` to view all devices on the local network.
-- I used the regex find pattern "[0-9]+\. \* \[ \]" to replace all occurrences of numbered checkboxes with hyphen checkboxes. The replacement pattern was "- [ ]"
+- Regex find and replace in VSCode
+  - I used the find pattern `[0-9]+\.` in conjunction with the replace pattern `- [ ]` to replace this
+    ````
+    1. lorem ipsum
+    2. Tom Langan
+    3. Another list item
+    ```
+    with this
+    ```
+    - [ ] lorem ipsum
+    - [ ] Tom Langan
+    - [ ] Another list item
+    ```
+    ````
+  - I used the find pattern `<a href=.+?>(\w\*)</a>` in conjunction with the replace pattern `$1` to replace this
+    ```
+    <li><a href="index.php">Home</a></li>
+    <li><a href="about.php">About</a></li>
+    <li><a href="contact.php">Contact</a></li>
+    ```
+    with this
+    ```
+    <li>Home</li>
+    <li>About</li>
+    <li>Contact</li>
+    ```
 - The expiration date on web push subscriptions is determined by the subscription service.
 - [This](https://curlconverter.com/javascript/) is a great resource to convert curl commands to fetch API in JavaScript.
+- The [W3C Markup Validator](https://validator.w3.org/#validate_by_input) is a very useful tool.
+- [This](https://www.dell.com/community/en/conversations/xps/xps-15-7590-no-number-lock-key-for-special-characters/647f880af4ccf8a8de758f81) resource provides some guidance on using the hidden keyboard on my laptop

@@ -81,6 +81,7 @@
   - [ ] Prevent two users from starting the same task.
   - [ ] When working offline, do not allow a user to start a task but do allow them to work on it and complete it.
   - [ ]
+- Log DBErrors in Express App for all routes...currently it is just enabled for `Add` routes.
 
 ### Future
 
