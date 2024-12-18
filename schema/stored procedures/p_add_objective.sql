@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_add_objective;
 
 DELIMITER //
-CREATE PROCEDURE p_add_objective(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_add_objective(IN type varchar(30), IN data JSON)
 	BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN

@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_add_goal;
 
 DELIMITER //
-CREATE PROCEDURE p_add_goal(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_add_goal(IN type varchar(30), IN data JSON)
 	BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN
@@ -19,7 +19,7 @@ CREATE PROCEDURE p_add_goal(IN type varchar(30), IN data varchar(1000))
         END;
 	START TRANSACTION;
 	insert into goal (goal_name, goal_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
-	insert into objective_goal (objective_id, goal_id) values (Convert(JSON_EXTRACT(data, '$.parent_id'), unsigned), LAST_INSERT_ID());
+	insert into objective_goal (objective_id, goal_id) values (JSON_EXTRACT(data, '$.parent_id'), LAST_INSERT_ID());
     COMMIT;
 	END //
 

@@ -72,6 +72,7 @@
     ```
     This design should ensure that no database errors are returned to the application.
   - In the event that a database error occurs the Express server should return a `soft` message to the application indicating that something went wrong and that the user should try the operation again and that if it still fails, register a complaint.
+- [This](https://stackoverflow.com/questions/11321491/when-to-use-single-quotes-double-quotes-and-backticks-in-mysql) was very helpful with quoting in MySQL. It included references to single quotes, double quotes and back ticks.
 
 ### Root CA Management
 
@@ -103,6 +104,8 @@
   Now make sure the files have the same name as the IP address, in this case 123.456.7891 and put them in the cert folder.
 - Service worker:
   - The IP address and port to which the Express server is listening on is provided to the service worker by the client, the web page, when needed. The only purpose the service worker currently has for this information is to log a web push subscription in the database. When the client, the web page, requests the service worker to do this it does so in a message that contains the relevant IP address and port.
+  - The last time I tried to exercise the service worker the "Sites can ask to send notifications" option was deselected and the option "Collapse unwanted requests (recommended)" as selected. This causes any request to send notifications to be immediately blocked. To fix this problem I selected the "Sites can ask to send notifications" option and the "Expand all requests" option. Image shown below.
+    ![alt text](image.png)
 
 ### Future AWS Implementation
 

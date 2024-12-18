@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_add_task;
 
 DELIMITER //
-CREATE PROCEDURE p_add_task(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_add_task(IN type varchar(30), IN data JSON)
 	BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN
@@ -20,7 +20,7 @@ CREATE PROCEDURE p_add_task(IN type varchar(30), IN data varchar(1000))
     
 	START TRANSACTION;
 	insert into task (task_name, task_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
-	insert into goal_task (goal_id, task_id) values (Convert(JSON_EXTRACT(data, '$.parent_id'), unsigned), LAST_INSERT_ID());
+	insert into goal_task (goal_id, task_id) values (JSON_EXTRACT(data, '$.parent_id'), LAST_INSERT_ID());
     COMMIT;
 	END //
 
