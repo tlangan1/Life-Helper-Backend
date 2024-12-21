@@ -11,8 +11,8 @@ CREATE PROCEDURE p_create_goal()
 
 	create table goal (
 		goal_id int not null auto_increment,
-		goal_name varchar(50) not null,
-		goal_description varchar(1000) not null,
+		item_name varchar(50) not null,
+		item_description varchar(1000) not null,
 		started_dtm datetime null,
 		completed_dtm datetime null,
 		deleted_dtm datetime null,

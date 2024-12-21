@@ -13,6 +13,7 @@ create procedure p_create_table_schema(IN preserve_data bool)
     call p_create_table('objective', preserve_data);
     call p_create_table('goal', preserve_data);
     call p_create_table('task', preserve_data);
+    call p_create_table('note', preserve_data);
 
     call p_add_all_foreign_keys();
     END //

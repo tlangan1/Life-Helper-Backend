@@ -19,7 +19,7 @@ CREATE PROCEDURE p_add_task(IN type varchar(30), IN data JSON)
         END;
     
 	START TRANSACTION;
-	insert into task (task_name, task_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
+	insert into task (item_name, item_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
 	insert into goal_task (goal_id, task_id) values (JSON_EXTRACT(data, '$.parent_id'), LAST_INSERT_ID());
     COMMIT;
 	END //

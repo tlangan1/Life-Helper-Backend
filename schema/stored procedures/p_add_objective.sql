@@ -17,7 +17,7 @@ CREATE PROCEDURE p_add_objective(IN type varchar(30), IN data JSON)
 			call p_handle_db_error(@params);
         END;
 	
-    insert into objective (objective_name, objective_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
+    insert into objective (item_name, item_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
 	END //
 
 DELIMITER ;
