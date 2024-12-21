@@ -1,9 +1,11 @@
-DROP PROCEDURE IF exists p_delete_item;
+DROP PROCEDURE IF exists p_cancel_delete_item;
 
 DELIMITER //
-CREATE PROCEDURE p_delete_item(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_cancel_delete_item(IN data varchar(1000))
 BEGIN
-	CASE type
+	set @type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.item_type'));
+    select @type;
+	CASE @type
 		WHEN "objective" THEN
 			update objective set deleted_dtm = current_timestamp() where objective_id = JSON_EXTRACT(data, '$.item_id');
 		WHEN "goal" THEN

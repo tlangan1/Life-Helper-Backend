@@ -10,6 +10,8 @@
 - [Architecture](#architecture)
   - [Back End](#back-end)
   - [Database](#database)
+    - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
+    - [Creating a test database](#creating-a-test-database)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
@@ -72,7 +74,73 @@
     ```
     This design should ensure that no database errors are returned to the application.
   - In the event that a database error occurs the Express server should return a `soft` message to the application indicating that something went wrong and that the user should try the operation again and that if it still fails, register a complaint.
-- [This](https://stackoverflow.com/questions/11321491/when-to-use-single-quotes-double-quotes-and-backticks-in-mysql) was very helpful with quoting in MySQL. It included references to single quotes, double quotes and back ticks.
+
+#### Hierarchical versus web-like item structure
+
+- I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
+- This is ambitious but I believe it will prove very useful.
+
+#### Creating a test database
+
+- I created a test database called t_life_helper using the following commands and scripts.
+- First I executed these commands
+
+  ```
+  create database t_life_helper;
+  use t_life_helper;
+  ```
+
+- Then I executed these scripts
+
+  ```
+  p_create_table
+  p_create_table_schema
+  p_create_objective_goal
+  p_create_goal_task
+  p_create_web_push_subscription
+  p_create_sql_error
+  p_create_objective
+  p_create_goal
+  p_create_task
+  p_create_note
+  p_drop_all_foreign_keys
+  p_add_all_foreign_keys
+  p_add_objective_goal_foreign_keys
+  p_add_goal_task_foreign_keys
+  ```
+
+- Then I executed this commands
+
+  ```
+  call p_create_table_schema(false);
+  ```
+
+- Then I executed these scripts
+
+  ```
+  trigger_task_update
+  p_add_objective
+  p_add_goal
+  p_add_task
+  p_add_item
+  p_handle_db_error (used by the p_add... SPs)
+  p_get_items
+  trigger_log
+  ```
+
+- At this point I tested the applications against this new database. To enable this I changed the database reference in the object passed to createPool as shown below.
+
+  ```
+  var pool = createPool({
+      host: "localhost",
+      user: "tlangan",
+      password: "-UnderAWhiteSky1",
+      database: "t_life_helper", //schema
+      // Remember, connections are lazily created
+      connectionLimit: 10,
+  });
+
+  ```
 
 ### Root CA Management
 
