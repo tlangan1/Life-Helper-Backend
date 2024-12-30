@@ -1,1 +1,1 @@
-create database life_helper
+create database if not exists life_helper;

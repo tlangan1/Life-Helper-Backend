@@ -12,6 +12,8 @@ BEGIN
 			call p_add_task(type, data);
 		WHEN "web_push_subscription" THEN
         	insert into web_push_subscription (capability_url, public_key, private_key) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.endpoint')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.p256dh')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.auth')));
+		WHEN "note" THEN
+			call p_add_note(data);
 	END CASE;
 END //
 DELIMITER ;

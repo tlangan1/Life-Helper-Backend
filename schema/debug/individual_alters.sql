@@ -1,4 +1,0 @@
-alter table objective_goal drop foreign key fk_objective_goal_to_goal;
-alter table objective_goal drop index fk_objective_goal_to_goal;
-alter table objective_goal drop foreign key fk_objective_goal_to_objective;
-alter table objective_goal drop index fk_objective_goal_to_objective

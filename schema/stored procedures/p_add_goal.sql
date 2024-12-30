@@ -18,7 +18,7 @@ CREATE PROCEDURE p_add_goal(IN type varchar(30), IN data JSON)
 			call p_handle_db_error(@params);
         END;
 	START TRANSACTION;
-	insert into goal (item_name, item_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.description')));
+	insert into goal (item_name, item_description) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.item_name')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.item_description')));
 	insert into objective_goal (objective_id, goal_id) values (JSON_EXTRACT(data, '$.parent_id'), LAST_INSERT_ID());
     COMMIT;
 	END //

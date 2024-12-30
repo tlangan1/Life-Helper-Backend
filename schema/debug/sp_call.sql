@@ -1,1 +1,0 @@
-call p_remove_fks_and_associated_idxes_2

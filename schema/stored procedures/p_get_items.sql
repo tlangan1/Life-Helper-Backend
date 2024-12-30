@@ -21,6 +21,8 @@ BEGIN
             and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 		WHEN "subscriptions" THEN
 			select * from web_push_subscription where unsubscribed_or_expired_dtm Is Null;
+		WHEN "notes" THEN
+			call p_get_notes(data);
 	END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		select * from t1

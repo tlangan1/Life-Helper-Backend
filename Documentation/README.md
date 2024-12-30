@@ -11,7 +11,7 @@
   - [Back End](#back-end)
   - [Database](#database)
     - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
-    - [Creating a test database](#creating-a-test-database)
+    - [Automate Creation of Life Helper Database](#automate-creation-of-life-helper-database)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
@@ -80,67 +80,19 @@
 - I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
 - This is ambitious but I believe it will prove very useful.
 
-#### Creating a test database
+#### Automate Creation of Life Helper Database
 
-- I created a test database called t_life_helper using the following commands and scripts.
-- First I executed these commands
-
-  ```
-  create database t_life_helper;
-  use t_life_helper;
-  ```
-
-- Then I executed these scripts
-
-  ```
-  p_create_table
-  p_create_table_schema
-  p_create_objective_goal
-  p_create_goal_task
-  p_create_web_push_subscription
-  p_create_sql_error
-  p_create_objective
-  p_create_goal
-  p_create_task
-  p_create_note
-  p_drop_all_foreign_keys
-  p_add_all_foreign_keys
-  p_add_objective_goal_foreign_keys
-  p_add_goal_task_foreign_keys
-  ```
-
-- Then I executed this commands
-
-  ```
-  call p_create_table_schema(false);
-  ```
-
-- Then I executed these scripts
-
-  ```
-  trigger_task_update
-  p_add_objective
-  p_add_goal
-  p_add_task
-  p_add_item
-  p_handle_db_error (used by the p_add... SPs)
-  p_get_items
-  trigger_log
-  ```
-
-- At this point I tested the applications against this new database. To enable this I changed the database reference in the object passed to createPool as shown below.
-
-  ```
-  var pool = createPool({
-      host: "localhost",
-      user: "tlangan",
-      password: "-UnderAWhiteSky1",
-      database: "t_life_helper", //schema
-      // Remember, connections are lazily created
-      connectionLimit: 10,
-  });
-
-  ```
+- To connect to the database using mysqlsh execute the following command
+  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
+  - To check the status of the connection enter `shell.status()`
+  - To exit from the session enter `\quit`
+  - To pass the password in use the following syntax `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
+- To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
+- I used MySQL Workbench to compare database life_helper to database t_life_helper.
+  - I used the menu option Database->Compare Schemas... but I had to open a New Modal using File->New Modal in order for the Compare Schemas options to be available. See `MySQL_comparison_tool_results.txt` in the schema/bootstrap directory. This provides a good high-level view.
+  - I then created some scripts to give me very granular information about the differences between objects in the two databases. I created the following scripts that can be found in the schema/bootstrap directory.
+    - p_diff_stored_procedures.sql
+    - p_diff_triggers.sql
 
 ### Root CA Management
 
@@ -182,6 +134,7 @@
 
 ## Personal Notes
 
+- I came across [this](https://webaim.org/resources/contrastchecker/) tool to analyze color contrast
 - On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
 - Use the command `arp -a` to view all devices on the local network.
 - Regex find and replace in VSCode
@@ -214,3 +167,7 @@
 - [This](https://curlconverter.com/javascript/) is a great resource to convert curl commands to fetch API in JavaScript.
 - The [W3C Markup Validator](https://validator.w3.org/#validate_by_input) is a very useful tool.
 - [This](https://www.dell.com/community/en/conversations/xps/xps-15-7590-no-number-lock-key-for-special-characters/647f880af4ccf8a8de758f81) resource provides some guidance on using the hidden keyboard on my laptop
+- I downloaded [MySQL Shell for VS Code](https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code). See [these](https://dev.mysql.com/doc/mysql-shell-gui/en/) instructions for the use of this tool.
+  - This extension immediately complained about the version of the Microsoft C and C++ (MSVC) runtime library that was installed so I downloaded the latest version from [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) and installed it. This is the version that was installed `Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433`. Note, the installer is in the downloads directory and it is called `VC_redist.x64.exe`.
+  - Next the extension complained about a web certificate not being installed. This certificate is what allows https connections to the database from this tool. It is a root certificate authority installed locally (just like the one I created for Life Helper) to validate the access. According to the documentation is is stored here, %appdata%\MySQL\mysqlsh-gui\plugin_data\gui_plugin\web_certs\rootCA.crt which, in my case, maps to `C:\Users\tomla\AppData\Roaming\MySQL\mysqlsh-gui\plugin_data\gui_plugin\web_certs` and there are two certificates there, rootCA.crt and server.crt.
+  - I am going to use MySQL workbench for now so I am going to disable this extension.S
