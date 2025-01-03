@@ -8,7 +8,7 @@
 # mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../scripts/show_tables_in_life_helper.sql
 
 # create the database
-mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/create_t_life_helper_db.sql
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/create_life_helper_db.sql
 
 ## load these two helper scripts
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/p_create_table.sql

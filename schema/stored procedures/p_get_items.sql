@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_get_items;
 
 DELIMITER //
-CREATE PROCEDURE p_get_items(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_get_items(IN type varchar(30), IN data JSON)
 BEGIN
 	drop temporary table if exists t1;
 	CASE type

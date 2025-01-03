@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_cancel_delete_item;
 
 DELIMITER //
-CREATE PROCEDURE p_cancel_delete_item(IN data varchar(1000))
+CREATE PROCEDURE p_cancel_delete_item(IN data JSON)
 BEGIN
 	set @type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.item_type'));
     select @type;

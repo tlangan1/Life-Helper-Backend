@@ -1,7 +1,7 @@
 DROP PROCEDURE IF exists p_update_item;
 
 DELIMITER //
-CREATE PROCEDURE p_update_item(IN type varchar(30), IN data varchar(1000))
+CREATE PROCEDURE p_update_item(IN type varchar(30), IN data JSON)
 BEGIN
 	CASE type
 		WHEN "start" THEN
