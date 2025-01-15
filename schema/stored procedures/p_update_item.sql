@@ -6,6 +6,8 @@ BEGIN
 	CASE type
 		WHEN "start" THEN
 			update task set started_dtm = current_timestamp where task_id = JSON_EXTRACT(data, '$.task_id');
+		WHEN "pause" THEN
+			update task set paused_dtm = current_timestamp where task_id = JSON_EXTRACT(data, '$.task_id');
 		WHEN "complete" THEN
 			update task set completed_dtm = current_timestamp where task_id = JSON_EXTRACT(data, '$.task_id');
 		WHEN "cancel_delete" THEN

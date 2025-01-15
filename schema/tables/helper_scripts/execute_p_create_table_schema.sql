@@ -1,1 +1,1 @@
-call p_create_table_schema(false);
+call p_create_table_schema(true);
