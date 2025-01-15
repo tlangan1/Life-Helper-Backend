@@ -12,6 +12,9 @@
   - [Database](#database)
     - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
     - [Automate Creation of Life Helper Database](#automate-creation-of-life-helper-database)
+  - [Test Driven Database Development](#test-driven-database-development)
+    - [Automate creation of test database](#automate-creation-of-test-database)
+    - [Create a test](#create-a-test)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
@@ -93,6 +96,39 @@
   - I then created some scripts to give me very granular information about the differences between objects in the two databases. I created the following scripts that can be found in the schema/bootstrap directory.
     - p_diff_stored_procedures.sql
     - p_diff_triggers.sql
+
+### Test Driven Database Development
+
+#### Automate creation of test database
+
+- All tests should be executed in the test environment, the test_life_helper database.
+- The first step in a test is to copy the production database, the life-helper database to the test_life_helper database. To do this run the following command.
+  ```
+  ./create-test-environment.sh -UnderAWhiteSky1
+  ```
+  Note, the ./ is important
+
+#### Create a test
+
+- Start with a test for the task update trigger
+- Here is a diagram of the objective/goal/task structure for the test
+
+```mermaid
+  graph TD;
+      A[<h2>Objective 1</h2>];
+      B[<h2>Objective 2</h2>]-->D[<h3>Goal 1</h3>]; C-->E[<h3>Goal 2</h3>]
+      C[<h2>Objective 3</h2>]-->D[<h3>Goal 1</h3>];
+      D-->F[Task 1];
+      D-->G[Task 2];
+      E-->G[Task 2];
+```
+
+- In this test `task 1 will be started`.
+  - create all objectives goals and tasks
+  - `expect` them to all be un-started
+  - start task 1
+  - `expect` goal 1, objective 2 and objective 3 to be started.
+  - `expect` objective 1 and goal 2 to remain un-started.
 
 ### Root CA Management
 

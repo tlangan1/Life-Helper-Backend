@@ -84,10 +84,15 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../st
 
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_update_item.sql'
 
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_attach_item.sql'
+
+
 # Execute the schema creation script
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/execute_p_create_table_schema.sql
 
 # Now add the triggers
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../triggers/trigger_goal_update.sql
+
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../triggers/trigger_task_update.sql
 
 # Helper stored procedures not used in the application

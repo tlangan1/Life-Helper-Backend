@@ -14,6 +14,7 @@ CREATE PROCEDURE p_create_task()
 		item_name varchar(50) not null,
 		item_description varchar(1000) not null,
 		started_dtm datetime null,
+		paused_dtm datetime null,
 		completed_dtm datetime null,
 		deleted_dtm datetime null,
 		create_dtm datetime default current_timestamp not null,
