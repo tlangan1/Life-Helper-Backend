@@ -44,16 +44,16 @@
 - [x] Obfuscate the user access token and the use of the refresh access token request to re-enable the user access token. See if this passes muster in Github/Github pages.
 - [x] Get rid of all the node modules folders. They can be replaced with the `npm ci` command when needed.
 - [x] Convert the `AWS RDS database creation 9-25-2024` to a markdown file.
+- [x] Reengineer the table creation scripts to avoid placing archiving and foreign key creation code in the individual table scripts. These scripts should create the table structure and nothing else. Create a wrapper schema change script.
 
 ### Currently Being Implemented TODOs
 
-- [ ] Render the completed TODOs as a requirements document
+- [ ] Render the completed TODOs as a requirements document.
+- [ ] Render the completed TODOs as a set of tests.
 - [ ] Create a list of `Yet To Be Implemented TODOs` to create the minimal version of the application to demonstrate mastery of the the PWA & Caching as well as Push.
 
 ### Yet To Be Implemented TODOs
 
-- [ ] `DO THIS LOCALLY AND THEN TEST ON THE AWS RDS INSTANCE`: Reengineer the table creation scripts to avoid placing archiving and foreign key creation code in the individual table scripts. These scripts should create the table structure and nothing else. Create a wrapper schema change script, or possibly stored procedure, that first archives the data by calling `scripts/remove_data.sql` and the calls the appropriate DDL scripts
-- [ ] Express Server is sending pushes twice...it should only do a push once.
 - [ ] Log service worker changes and retiring previous service worker DB rows. Perhaps I should create a new entity web_push_subscription_version which maintains a history of service workers that all use the same capability url.s
 - [ ] I should create a route using solidJS to give the appearance that the service worker file is at the root and move it to a more logical place in the file system. See <a href="#service-worker-in-root">item number 1</a> above
 - [ ] All the data required by the interface should be cached. The service worker should update the cache when a push is received. Pushes should be restricted to time sensitive data changes like the starting of a task. If a user goes offline they should not be allowed to start a new task. If this were allowed then it could be the case that several users start the same task which should not be allowed.
