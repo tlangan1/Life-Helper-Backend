@@ -10,11 +10,13 @@
 - [Architecture](#architecture)
   - [Back End](#back-end)
   - [Database](#database)
-    - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
     - [Automate Creation of Life Helper Database](#automate-creation-of-life-helper-database)
+    - [mysqlsh.exe](#mysqlshexe)
+    - [Miscellaneous](#miscellaneous)
+    - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
   - [Test Driven Database Development](#test-driven-database-development)
     - [Automate creation of test database](#automate-creation-of-test-database)
-    - [Create a test](#create-a-test)
+    - [Create Tests](#create-tests)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
@@ -62,6 +64,30 @@
 
 ### Database
 
+#### Automate Creation of Life Helper Database
+
+- To create the life_helper schema execute the shell script `create_schema.sh` as follows:
+  ```
+  ./create_schema.sh -UnderAWhiteSky1 t_life_helper
+  ```
+  - The execute_p_create_table_schema.sql script has a hard-coded `true` being passed to the p_create_table_schema stored procedure. This causes the default behavior of retaining all data. If you want to clear the database of data alter this sql script to pass false.
+- The MySQL Workbench Compare Schemas capability can be used to compare databases. I use this tool to compare life_helper to t_life_helper to ensure that I am keeping the scripts up to date.
+  - To use the Compare Schemas capability use the menu option Database->Compare Schemas. Note that if this option is not available then open a New Modal using File->New Modal which should make the option available. See text files in the schema/bootstrap directory for the results. This provides a good high-level view.
+  - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
+    - diff_stored_procedures.sql
+    - diff_triggers.sql
+
+#### mysqlsh.exe
+
+- Use the following syntax to use mysqlsh from the command line
+  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
+  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
+  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
+  - To check the status of the connection enter `shell.status()`
+  - To exit from the session enter `\quit`
+
+#### Miscellaneous
+
 - `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
   - I created a stored procedure to remove the foreign keys called `p_drop_all_foreign_keys.sql`. I think this is a tool I may need to use when doing database upgrades but wanting to retain existing data.
   - I created an analog for the indexes but I do not think it will be used. I did it as an exercise. The stored procedure is called `p_drop_all_non_primary_indexes`
@@ -83,20 +109,6 @@
 - I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
 - This is ambitious but I believe it will prove very useful.
 
-#### Automate Creation of Life Helper Database
-
-- To connect to the database using mysqlsh execute the following command
-  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
-  - To check the status of the connection enter `shell.status()`
-  - To exit from the session enter `\quit`
-  - To pass the password in use the following syntax `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
-- To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
-- I used MySQL Workbench to compare database life_helper to database t_life_helper.
-  - I used the menu option Database->Compare Schemas... but I had to open a New Modal using File->New Modal in order for the Compare Schemas options to be available. See `MySQL_comparison_tool_results.txt` in the schema/bootstrap directory. This provides a good high-level view.
-  - I then created some scripts to give me very granular information about the differences between objects in the two databases. I created the following scripts that can be found in the schema/bootstrap directory.
-    - p_diff_stored_procedures.sql
-    - p_diff_triggers.sql
-
 ### Test Driven Database Development
 
 #### Automate creation of test database
@@ -108,27 +120,59 @@
   ```
   Note, the ./ is important
 
-#### Create a test
+#### Create Tests
 
-- Start with a test for the task update trigger
-- Here is a diagram of the objective/goal/task structure for the test
+- To run a test uncomment the test at the end of script create-test-environment.sh that you want to run and then execute it as shown below.
+  ```
+  ./create-test-environment.sh -UnderAWhiteSky1 test_life_helper
+  ```
+  Only execute 1 test script at a time as unanticipated interactions between scripts may occur and that could be very confusing.
+- As of 1/16/2025 here are the list of available tests:
+  - `p_task_and_goal_trigger_test_1`
+  - `p_task_and_goal_trigger_test_2`
+- `p_task_and_goal_trigger_test_1`: Test for task and goal update triggers. This test will ensure that the `started status` is properly propagated from tasks to goals to objectives.
 
-```mermaid
-  graph TD;
-      A[<h2>Objective 1</h2>];
-      B[<h2>Objective 2</h2>]-->D[<h3>Goal 1</h3>]; C-->E[<h3>Goal 2</h3>]
-      C[<h2>Objective 3</h2>]-->D[<h3>Goal 1</h3>];
-      D-->F[Task 1];
-      D-->G[Task 2];
-      E-->G[Task 2];
-```
+  - Here is a diagram of the objective/goal/task structure for the test
 
-- In this test `task 1 will be started`.
-  - create all objectives goals and tasks
-  - `expect` them to all be un-started
-  - start task 1
-  - `expect` goal 1, objective 2 and objective 3 to be started.
-  - `expect` objective 1 and goal 2 to remain un-started.
+    ```mermaid
+    graph TD;
+        A[<h2>Objective 1</h2>];
+        B[<h2>Objective 2</h2>]-->D[<h3>Goal 1</h3>];
+        C[<h2>Objective 3</h2>]-->D[<h3>Goal 1</h3>]; C-->E[<h3>Goal 2</h3>]
+        D-->F[Task 1];
+        D-->G[Task 2];
+        E-->G[Task 2];
+    ```
+
+  - In this test `task 1 will be started`.
+    - create all objectives goals and tasks
+    - `expect` them to all be un-started
+    - start task 1
+    - `expect` goal 1, objective 2 and objective 3 to be started.
+    - `expect` objective 1 and goal 2 to remain un-started.
+
+- `p_task_and_goal_trigger_test_2`: Test for task and goal update triggers. This test will ensure that the `completed status` is properly propagated from tasks to goals to objectives.
+
+  - Here is a diagram of the objective/goal/task structure for the test
+
+    ```mermaid
+    graph TD;
+        A[<h2>Objective 1</h2>];
+        B[<h2>Objective 2</h2>]-->D[<h3>Goal 3</h3>]; B-->E[<h3>Goal 1</h3>]
+        C[<h2>Objective 3</h2>]-->E[<h3>Goal 1</h3>]; C-->F[<h3>Goal 2</h3>];
+        D-->I[Task 3];
+        E-->G[Task 1];
+        E-->H[Task 2];
+        F-->H[Task 2];
+    ```
+
+  - In this test `task 1 will be completed`.
+    - create all objectives goals and tasks
+    - start and complete task 2
+    - `expect` them to all be un-completed except for goal 2
+    - start and complete task 1
+    - `expect` goal 1 and objective 3 to be completed.
+    - `expect` objective 1, objective 2 and goal 3 to remain un-completed.
 
 ### Root CA Management
 

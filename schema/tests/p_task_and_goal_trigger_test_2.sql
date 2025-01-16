@@ -1,14 +1,12 @@
 
-use test_life_helper;
-
 -- One potential flaw of this logic might be exposed if there is
 -- already an objective or goal with any of the
 -- names in the objectives and goals created below.
 
-drop procedure if exists p_task_trigger_test_1;
+drop procedure if exists p_task_and_goal_trigger_test_2;
 
 DELIMITER //
-create procedure p_task_trigger_test_1()
+create procedure p_task_and_goal_trigger_test_2()
 	BEGIN
 	-- Create Objective 1
 	set @objective_description = "Some Description";
@@ -47,6 +45,13 @@ create procedure p_task_trigger_test_1()
 	Execute statement using @JSON;
     select goal_id into @goal_2_id from goal where item_name = @goal_2_name;
 
+	-- Create Goal 3
+	set @goal_3_name = "Test Goal 3";
+	set @JSON = JSON_OBJECT('parent_id', @objective_2_id, 'item_name', @goal_3_name, 'item_description', @goal_description);
+	PREPARE statement FROM 'call p_add_item("goal", ?)';
+	Execute statement using @JSON;
+    select goal_id into @goal_3_id from goal where item_name = @goal_3_name;
+
 	-- Attach Goal 1 to Objective 3
 	set @JSON = JSON_OBJECT('parent_id', @objective_3_id, 'child_id', @goal_1_id);
 	PREPARE statement FROM 'call p_attach_item("goal", ?)';
@@ -67,23 +72,40 @@ create procedure p_task_trigger_test_1()
 	Execute statement using @JSON;
     select task_id into @task_2_id from task where item_name = @task_2_name;
 
+	-- Create Task 3
+	set @task_3_name = "Test Task 3";
+	set @JSON = JSON_OBJECT('parent_id', @goal_3_id, 'item_name', @task_3_name, 'item_description', @task_description);
+	PREPARE statement FROM 'call p_add_item("task", ?)';
+	Execute statement using @JSON;
+    select task_id into @task_3_id from task where item_name = @task_3_name;
+
 	-- Attach Task 2 to Goal 2
 	set @JSON = JSON_OBJECT('parent_id', @goal_2_id, 'child_id', @task_2_id);
 	PREPARE statement FROM 'call p_attach_item("task", ?)';
 	Execute statement using @JSON;
 
-	DEALLOCATE PREPARE statement;
+	-- Start Task 2
+	set @JSON = JSON_OBJECT('task_id', @task_2_id);
+	PREPARE statement FROM 'call p_update_item("start", ?)';
+	Execute statement using @JSON;
 
-	-- Make sure the initial condition of nothing being started is true
+	-- Complete Task 2
+	set @JSON = JSON_OBJECT('task_id', @task_2_id);
+	PREPARE statement FROM 'call p_update_item("complete", ?)';
+	Execute statement using @JSON;
+
+	-- Make sure the initial condition of everything is un-completed except for goal 2 is true
 	Select count(*) into @count from objective where objective_id in (@objective_1_id, @objective_2_id, @objective_3_id)
-    and started_dtm Is Not Null;
-	IF @count = 0 THEN
-		Select count(*) into @count from goal where goal_id in (@goal_1_id, @goal_2_id)
-		and started_dtm Is Not Null;
-        IF @count = 0 THEN
-			Select count(*) into @count from task where task_id in (@task_1_id, @task_2_id)
-			and started_dtm Is Not Null;
-			IF @count = 0 THEN
+    and completed_dtm Is Null;
+	Select completed_dtm into @goal_1_completed from goal where goal_id = @goal_1_id;
+	Select completed_dtm into @goal_2_completed from goal where goal_id = @goal_2_id;
+	Select completed_dtm into @goal_3_completed from goal where goal_id = @goal_3_id;
+	Select completed_dtm into @task_1_completed from task where task_id = @task_1_id;
+	Select completed_dtm into @task_2_completed from task where task_id = @task_2_id;
+	Select completed_dtm into @task_3_completed from task where task_id = @task_3_id;
+	IF @count = 3 THEN
+        IF @goal_1_completed Is Null and @goal_2_completed Is Not Null and @goal_3_completed Is Null THEN
+			IF @task_1_completed Is Null and @task_2_completed Is Not Null and @task_3_completed Is Null THEN
 				select "SUCCESS: Initial Assertion Correct" as result;
 			ELSE
 				select "FAILURE: Initial Assertion Incorrect" as result;
@@ -100,17 +122,24 @@ create procedure p_task_trigger_test_1()
 	PREPARE statement FROM 'call p_update_item("start", ?)';
 	Execute statement using @JSON;
 
+	-- Complete Task 1
+	set @JSON = JSON_OBJECT('task_id', @task_1_id);
+	PREPARE statement FROM 'call p_update_item("complete", ?)';
+	Execute statement using @JSON;
+
 	-- Make sure the final condition of the right items being started is true
-	Select started_dtm into @objective_1_started from objective where objective_id = @objective_1_id;
-	Select started_dtm into @objective_2_started from objective where objective_id = @objective_2_id;
-	Select started_dtm into @objective_3_started from objective where objective_id = @objective_3_id;
-	Select started_dtm into @goal_1_started from goal where goal_id = @goal_1_id;
-	Select started_dtm into @goal_2_started from goal where goal_id = @goal_2_id;
-	Select started_dtm into @task_1_started from task where task_id = @task_1_id;
-	Select started_dtm into @task_2_started from task where task_id = @task_2_id;
-	IF @objective_1_started Is Null and @objective_2_started Is Not Null and @objective_3_started Is Not Null THEN
-		IF @goal_1_started Is Not Null and @goal_2_started Is Null THEN
-			IF @task_1_started Is Not Null and @task_2_started Is Null THEN
+	Select completed_dtm into @objective_1_completed from objective where objective_id = @objective_1_id;
+	Select completed_dtm into @objective_2_completed from objective where objective_id = @objective_2_id;
+	Select completed_dtm into @objective_3_completed from objective where objective_id = @objective_3_id;
+	Select completed_dtm into @goal_1_completed from goal where goal_id = @goal_1_id;
+	Select completed_dtm into @goal_2_completed from goal where goal_id = @goal_2_id;
+	Select completed_dtm into @goal_3_completed from goal where goal_id = @goal_3_id;
+	Select completed_dtm into @task_1_completed from task where task_id = @task_1_id;
+	Select completed_dtm into @task_2_completed from task where task_id = @task_2_id;
+	Select completed_dtm into @task_3_completed from task where task_id = @task_3_id;
+	IF @objective_1_completed Is Null and @objective_2_completed Is Null and @objective_3_completed Is Not Null THEN
+		IF @goal_1_completed Is Not Null and @goal_2_completed Is Not Null and @goal_3_completed Is Null THEN
+			IF @task_1_completed Is Not Null and @task_2_completed Is Not Null and @task_3_completed Is Null THEN
 				select "SUCCESS: Final Assertion Correct" as result;
 			ELSE
 				select "FAILURE: Final Assertion Incorrect" as result;
@@ -121,6 +150,8 @@ create procedure p_task_trigger_test_1()
 	ELSE
 		select "FAILURE: Final Assertion Incorrect" as result;
     END IF;
+
+	DEALLOCATE PREPARE statement;
 END //
 
 

@@ -1,6 +1,6 @@
-# to execute the script run ./create_schema.sh
+# to execute the script run ./create_schema.sh -UnderAWhiteSky1 life_helper
 # The ./ is important
-
+# 
 # Pass the password as the first argument
 # Pass the schema as the second argument
 
