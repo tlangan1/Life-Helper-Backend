@@ -1,30 +1,35 @@
+use test_life_helper;
 
 -- One potential flaw of this logic might be exposed if there is
--- already an objective or goal with any of the
--- names in the objectives and goals created below.
+-- an objective or goal imported from production with the same
+-- names as one of the objectives and/or goals created below.
 
 drop procedure if exists p_task_and_goal_trigger_test_1;
 
 DELIMITER //
 create procedure p_task_and_goal_trigger_test_1()
 	BEGIN
+    set @test_name = "task and goal trigger test 1";
+    insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	-- Create Objective 1
 	set @objective_description = "Some Description";
-	set @objective_1_name = "Test Objective 1";
+	set @objective_1_name = CONCAT("Objective 1 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', 0, 'item_name', @objective_1_name, 'item_description', @objective_description);
 	PREPARE statement FROM 'call p_add_item("objective", ?)';
 	Execute statement using @JSON;
     select objective_id into @objective_1_id from objective where item_name = @objective_1_name;
 
+    select "here we are" as result;
+
 	-- Create Objective 2
-	set @objective_2_name = "Test Objective 2";
+	set @objective_2_name = CONCAT("Objective 2 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', 0, 'item_name', @objective_2_name, 'item_description', @objective_description);
 	PREPARE statement FROM 'call p_add_item("objective", ?)';
 	Execute statement using @JSON;
     select objective_id into @objective_2_id from objective where item_name = @objective_2_name;
 
 	-- Create Objective 3
-	set @objective_3_name = "Test Objective 3";
+	set @objective_3_name = CONCAT("Objective 3 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', 0, 'item_name', @objective_3_name, 'item_description', @objective_description);
 	PREPARE statement FROM 'call p_add_item("objective", ?)';
 	Execute statement using @JSON;
@@ -32,14 +37,14 @@ create procedure p_task_and_goal_trigger_test_1()
 
 	-- Create Goal 1
 	set @goal_description = "Some Goal Description";
-	set @goal_1_name = "Test Goal 1";
+	set @goal_1_name = CONCAT("Goal 1 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', @objective_2_id, 'item_name', @goal_1_name, 'item_description', @goal_description);
 	PREPARE statement FROM 'call p_add_item("goal", ?)';
 	Execute statement using @JSON;
     select goal_id into @goal_1_id from goal where item_name = @goal_1_name;
 
 	-- Create Goal 2
-	set @goal_2_name = "Test Goal 2";
+	set @goal_2_name = CONCAT("Goal 2 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', @objective_3_id, 'item_name', @goal_2_name, 'item_description', @goal_description);
 	PREPARE statement FROM 'call p_add_item("goal", ?)';
 	Execute statement using @JSON;
@@ -52,14 +57,14 @@ create procedure p_task_and_goal_trigger_test_1()
 
 	-- Create Task 1
 	set @task_description = "Task Desc.";
-	set @task_1_name = "Test Task 1";
+	set @task_1_name = CONCAT("Task 1 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', @goal_1_id, 'item_name', @task_1_name, 'item_description', @task_description);
 	PREPARE statement FROM 'call p_add_item("task", ?)';
 	Execute statement using @JSON;
     select task_id into @task_1_id from task where item_name = @task_1_name;
 
 	-- Create Task 2
-	set @task_2_name = "Test Task 2";
+	set @task_2_name = CONCAT("Task 2 for ", @test_name);
 	set @JSON = JSON_OBJECT('parent_id', @goal_1_id, 'item_name', @task_2_name, 'item_description', @task_description);
 	PREPARE statement FROM 'call p_add_item("task", ?)';
 	Execute statement using @JSON;
@@ -82,15 +87,15 @@ create procedure p_task_and_goal_trigger_test_1()
 			Select count(*) into @count from task where task_id in (@task_1_id, @task_2_id)
 			and started_dtm Is Not Null;
 			IF @count = 0 THEN
-				select "SUCCESS: Initial Assertion Correct" as result;
+				insert into test_results (test_results_line) values ("SUCCESS: Initial Assertion Correct");
 			ELSE
-				select "FAILURE: Initial Assertion Incorrect" as result;
+				insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
 			END IF;
 		ELSE
-			select "FAILURE: Initial Assertion Incorrect" as result;
+			insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
         END IF;
 	ELSE
-		select "FAILURE: Initial Assertion Incorrect" as result;
+		insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
     END IF;
 
 	-- Start Task 1
@@ -109,15 +114,15 @@ create procedure p_task_and_goal_trigger_test_1()
 	IF @objective_1_started Is Null and @objective_2_started Is Not Null and @objective_3_started Is Not Null THEN
 		IF @goal_1_started Is Not Null and @goal_2_started Is Null THEN
 			IF @task_1_started Is Not Null and @task_2_started Is Null THEN
-				select "SUCCESS: Final Assertion Correct" as result;
+				insert into test_results (test_results_line) values ("SUCCESS: Final Assertion Correct");
 			ELSE
-				select "FAILURE: Final Assertion Incorrect" as result;
+				insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
 			END IF;
 		ELSE
-			select "FAILURE: Final Assertion Incorrect" as result;
+			insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
         END IF;
 	ELSE
-		select "FAILURE: Final Assertion Incorrect" as result;
+		insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
     END IF;
 END //
 

@@ -1,0 +1,10 @@
++-----------------------------------------+---------------------+
+| test_results_line                       | create_dtm          |
++-----------------------------------------+---------------------+
+| Beginning: task and goal trigger test 1 | 2025-01-17 14:33:56 |
+| SUCCESS: Initial Assertion Correct      | 2025-01-17 14:33:56 |
+| SUCCESS: Final Assertion Correct        | 2025-01-17 14:33:56 |
+| Beginning: task and goal trigger test 2 | 2025-01-17 14:33:56 |
+| SUCCESS: Initial Assertion Correct      | 2025-01-17 14:33:56 |
+| SUCCESS: Initial Assertion Correct      | 2025-01-17 14:33:56 |
++-----------------------------------------+---------------------+

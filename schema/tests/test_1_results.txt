@@ -1,6 +1,0 @@
-result
-SUCCESS: Initial Assertion Correct
-
-result
-SUCCESS: Final Assertion Correct
-
