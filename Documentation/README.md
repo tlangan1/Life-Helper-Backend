@@ -24,7 +24,11 @@
 
 ## Issues
 
-- Line feeds in text areas such as the item description cause `ER_INVALID_JSON_TEXT_IN_PARAM: Invalid JSON text..."Invalid encoding in string." at position...`. I may want to handle the insertion and update of this type of value outside the JSON structure or just remove each line feed and replace it with a space.
+- If a port is in use use the following command to determine the process id of the process using the port. In this example we are checking port 3000.
+  ```
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
+  ```
+  Then look up the process id in task manager to find the process. The easiest way to do this is to include pid in the columns and sort by pid.
 
 ## Diagrams
 

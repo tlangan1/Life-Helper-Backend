@@ -42,6 +42,8 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tab
 
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../triggers/DEBUG helpers/p_create_trigger_log.sql'
 
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/p_create_user_login.sql
+
 # load the foreign key stored procedures
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../foreign keys/p_add_all_foreign_keys.sql'
 
@@ -86,6 +88,7 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../st
 
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_attach_item.sql'
 
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_add_user_login.sql'
 
 # Execute the schema creation script
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/execute_p_create_table_schema.sql
