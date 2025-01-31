@@ -1,0 +1,26 @@
++--------------------------------------------+
+| Catalog Diff Report |
++--------------------------------------------+
+Table `life_helper`.`test_results` was created
+columns:
+
+- test_results_line of type VARCHAR
+- create_dtm of type DATETIME
+  \_\_
+  attributes:
+- engine: InnoDB
+- default character set: utf8mb4
+- default collate: utf8mb4_0900_ai_ci
+  \_\_
+  Table `life_helper`.`goal` was modified
+  Table `life_helper`.`task` was modified
+  Trigger `life_helper`.`trigger_goal_update` was dropped
+  Trigger `life_helper`.`trigger_task_update` was dropped
+  Trigger `life_helper`.`trigger_goal_update` was created
+  Trigger `life_helper`.`trigger_task_update` was created
+  Routine `life_helper`.`p_task_and_goal_trigger_test_1` was created
+  Routine `life_helper`.`p_task_and_goal_trigger_test_2` was created
+
+---
+
+End of MySQL Workbench Report

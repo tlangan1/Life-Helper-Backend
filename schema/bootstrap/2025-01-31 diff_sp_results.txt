@@ -1,0 +1,7 @@
+Compare life_helper to t_life_helper	p_add_goal_note_foreign_keys
+Compare life_helper to t_life_helper	p_add_item
+Compare life_helper to t_life_helper	p_add_objective_note_foreign_keys
+Compare life_helper to t_life_helper	p_add_task_note_foreign_keys
+Compare life_helper to t_life_helper	p_create_table_schema
+Compare life_helper to t_life_helper	p_get_items
+Compare life_helper to t_life_helper	p_update_item

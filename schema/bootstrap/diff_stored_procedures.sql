@@ -1,4 +1,4 @@
--- This will list any triggers with the same name but different contants
+-- This will list any triggers with the same name but different contents
 
 -- Compare life_helper to t_life_helper
 select "Compare life_helper to t_life_helper" as label, lf.routine_name from information_schema.routines lf

@@ -90,6 +90,8 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../st
 
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_add_user_login.sql'
 
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file '../stored procedures/p_get_user_login.sql'
+
 # Execute the schema creation script
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/execute_p_create_table_schema.sql
 

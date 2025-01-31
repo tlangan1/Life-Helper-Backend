@@ -23,6 +23,8 @@ BEGIN
 			select * from web_push_subscription where unsubscribed_or_expired_dtm Is Null;
 		WHEN "notes" THEN
 			call p_get_notes(data);
+		WHEN "user_login" THEN
+			call p_get_user_login(data);
 	END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		select * from t1
