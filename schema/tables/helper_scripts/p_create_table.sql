@@ -43,12 +43,14 @@ CREATE PROCEDURE p_create_table(IN t_name VARCHAR(50), IN preserve_data bool)
 		DEALLOCATE PREPARE prepared_statement;
         
         IF target_table_exists AND preserve_data THEN
-			-- Note, this code is unique to the exact change being implemented.
+			-- Note, the code in the called stored procedures is unique
+            -- to the exact change being implemented.
 			-- When not making any changes to the structure of a table the
-			-- select to use is a simple select * from t_[table name]
+			-- they should contain a simple 
+            -- insert into [table name] select * from t_[table name] statement
 
 -- 			insert into [table name] select * from t_[table name];
-			SET @SQL = CONCAT('insert into ', t_name, ' select * from t_', t_name);
+			SET @SQL = CONCAT('call p_migrate_', t_name, '()');
 			PREPARE prepared_statement FROM @SQL;
 			EXECUTE prepared_statement;
 			DEALLOCATE PREPARE prepared_statement;

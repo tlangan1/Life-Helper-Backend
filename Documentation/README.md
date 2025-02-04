@@ -10,7 +10,7 @@
 - [Architecture](#architecture)
   - [Back End](#back-end)
   - [Database](#database)
-    - [Automate Creation of Life Helper Database](#automate-creation-of-life-helper-database)
+    - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
     - [mysqlsh.exe](#mysqlshexe)
     - [Miscellaneous](#miscellaneous)
     - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
@@ -24,7 +24,7 @@
 
 ## Issues
 
-- If a port is in use use the following command to determine the process id of the process using the port. In this example we are checking port 3000.
+- If a port is in use use the following command `in Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
   ```
   Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
   ```
@@ -68,9 +68,26 @@
 
 ### Database
 
-#### Automate Creation of Life Helper Database
+#### Database Upgrade Life Cycle
 
-- To create the life_helper schema execute the shell script `create_schema.sh` as follows:
+- When the schema needs to change then that change must first be applied to the testing database, test_life_helper.
+
+  - The first step in any migration is to run the script, `run-baseline-tests.sh` as shown below. This script puts a copy of the production database, life_helper, into the test_life_helper database and runs all existing tests to ensure that all the existing tests do, in fact, pass in an unaltered copy of the production database. This step provides a solid baseline.
+
+  ```
+  ./run-baseline-tests.sh -UnderAWhiteSky1 test_life_helper
+  ```
+
+  - The next step is to create the delta script with which to apply all the changes to the copy of the production environment. Put this script in the schema/tests/delta-scripts folder and reference it from the run-all-tests.sh script.
+    ```
+    ######################################################
+    # Make the changes to the schema that are to be tested
+    ######################################################
+    ```
+  - Create a delta script to apply to test_life_helper
+  - Point the data server to test_life_helper
+
+- To create the life_helper schema from the scripts execute the shell script `create_schema.sh` as follows:
   ```
   ./create_schema.sh -UnderAWhiteSky1 t_life_helper
   ```
@@ -126,6 +143,7 @@
 
 #### Create Tests
 
+-
 - To run a test uncomment the test at the end of script create-test-environment.sh that you want to run and then execute it as shown below.
   ```
   ./create-test-environment.sh -UnderAWhiteSky1 test_life_helper

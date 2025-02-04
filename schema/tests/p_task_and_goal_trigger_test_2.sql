@@ -1,3 +1,4 @@
+use test_life_helper;
 
 -- One potential flaw of this logic might be exposed if there is
 -- already an objective or goal with any of the
@@ -10,6 +11,8 @@ create procedure p_task_and_goal_trigger_test_2()
 	BEGIN
 	-- Create Objective 1
     set @test_name = "task and goal trigger test 2";
+    select @test_name as running_test;
+
     insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	set @objective_description = "Some Description";
 	set @objective_1_name = CONCAT("Objective 1 for ", @test_name);

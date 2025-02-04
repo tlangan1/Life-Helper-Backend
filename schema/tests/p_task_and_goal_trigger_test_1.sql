@@ -10,6 +10,8 @@ DELIMITER //
 create procedure p_task_and_goal_trigger_test_1()
 	BEGIN
     set @test_name = "task and goal trigger test 1";
+    select @test_name as running_test;
+
     insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	-- Create Objective 1
 	set @objective_description = "Some Description";
@@ -18,8 +20,6 @@ create procedure p_task_and_goal_trigger_test_1()
 	PREPARE statement FROM 'call p_add_item("objective", ?)';
 	Execute statement using @JSON;
     select objective_id into @objective_1_id from objective where item_name = @objective_1_name;
-
-    select "here we are" as result;
 
 	-- Create Objective 2
 	set @objective_2_name = CONCAT("Objective 2 for ", @test_name);

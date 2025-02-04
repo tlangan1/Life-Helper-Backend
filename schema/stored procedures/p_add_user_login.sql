@@ -7,9 +7,10 @@ CREATE PROCEDURE p_add_user_login(IN data JSON)
     set @hashed_password = JSON_UNQUOTE(JSON_EXTRACT(data, '$.password'));
     set @full_name = JSON_UNQUOTE(JSON_EXTRACT(data, '$.full_name'));
     set @display_name = JSON_UNQUOTE(JSON_EXTRACT(data, '$.display_name'));
+    set @email_address = JSON_UNQUOTE(JSON_EXTRACT(data, '$.email_address'));
 
-	insert into user_login (user_name, hashed_password, full_name, display_name)
-    values (@user_name, @hashed_password, @full_name, @display_name);
+	insert into user_login (user_name, hashed_password, full_name, display_name, email_address)
+    values (@user_name, @hashed_password, @full_name, @display_name, @email_address);
 	END //
 
 DELIMITER ;

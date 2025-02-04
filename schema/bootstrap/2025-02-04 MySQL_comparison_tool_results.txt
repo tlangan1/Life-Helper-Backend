@@ -1,0 +1,40 @@
++--------------------------------------------+
+| Catalog Diff Report                        |
++--------------------------------------------+
+Table `life_helper`.`t_web_push_subscription` was dropped
+Table `life_helper`.`t_user_login` was dropped
+Table `life_helper`.`t_trigger_log` was dropped
+Table `life_helper`.`t_task_note` was dropped
+Table `life_helper`.`t_task` was dropped
+Table `life_helper`.`t_sql_error` was dropped
+Table `life_helper`.`t_objective_note` was dropped
+Table `life_helper`.`t_objective_goal` was dropped
+Table `life_helper`.`t_objective` was dropped
+Table `life_helper`.`t_note` was dropped
+Table `life_helper`.`t_goal_task` was dropped
+Table `life_helper`.`t_goal_note` was dropped
+Table `life_helper`.`t_goal` was dropped
+Table `life_helper`.`goal` was modified
+Table `life_helper`.`task` was modified
+Table `life_helper`.`user_login` was modified
+  columns:
+  - added column email_address of type VARCHAR(100)
+  __
+Trigger `life_helper`.`trigger_goal_update` was dropped
+Trigger `life_helper`.`trigger_task_update` was dropped
+Trigger `life_helper`.`trigger_goal_update` was created
+Trigger `life_helper`.`trigger_task_update` was created
+Routine `life_helper`.`p_migrate_web_push_subscription` was dropped
+Routine `life_helper`.`p_migrate_user_login` was dropped
+Routine `life_helper`.`p_migrate_task_note` was dropped
+Routine `life_helper`.`p_migrate_task` was dropped
+Routine `life_helper`.`p_migrate_sql_error` was dropped
+Routine `life_helper`.`p_migrate_objective_note` was dropped
+Routine `life_helper`.`p_migrate_objective_goal` was dropped
+Routine `life_helper`.`p_migrate_objective` was dropped
+Routine `life_helper`.`p_migrate_note` was dropped
+Routine `life_helper`.`p_migrate_goal_task` was dropped
+Routine `life_helper`.`p_migrate_goal_note` was dropped
+Routine `life_helper`.`p_migrate_goal` was dropped
+----------------------------------------------
+End of MySQL Workbench Report

@@ -1,14 +1,11 @@
-# to execute the script run ./create_schema.sh -UnderAWhiteSky1 life_helper
+# to execute the script run ./create_schema.sh -UnderAWhiteSky1 t_life_helper
 # The ./ is important
 # 
 # Pass the password as the first argument
-# Pass the schema as the second argument
-
-# This was just an example of how to run a script
-# mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../scripts/show_tables_in_life_helper.sql
+# Pass the schema to drop and recreate as the second argument
 
 # create the database
-mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/create_life_helper_db.sql
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/create_$2_db.sql
 
 ## load these two helper scripts
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/p_create_table.sql
