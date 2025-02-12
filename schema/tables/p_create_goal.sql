@@ -16,7 +16,7 @@ CREATE PROCEDURE p_create_goal()
 		started_dtm datetime null,
 		completed_dtm datetime null,
 		deleted_dtm datetime null,
-		create_dtm datetime default current_timestamp not null,
+		created_dtm datetime default current_timestamp not null,
 		last_update_dtm datetime on update current_timestamp,
 		PRIMARY KEY (goal_id)
 	);

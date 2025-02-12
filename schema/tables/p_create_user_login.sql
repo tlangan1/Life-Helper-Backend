@@ -13,7 +13,7 @@ CREATE PROCEDURE p_create_user_login()
 		full_name varchar(100) not null,
 		display_name varchar(30) not null,
         email_address varchar(100) null,
-		create_dtm datetime default current_timestamp not null,
+		created_dtm datetime default current_timestamp not null,
 		deleted_dtm datetime null,
 		PRIMARY KEY (user_login_id)
 	);

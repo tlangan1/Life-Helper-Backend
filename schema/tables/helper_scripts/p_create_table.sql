@@ -17,7 +17,7 @@ CREATE PROCEDURE p_create_table(IN t_name VARCHAR(50), IN preserve_data bool)
 					@errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 				SET @full_error = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 				select @full_error;
-				INSERT INTO sql_error (sql_error, stored_procedure_name, additional_information, create_dtm) values (@full_error, sp_name, CONCAT('table name: ', t_name), now());
+				INSERT INTO sql_error (sql_error, stored_procedure_name, additional_information, created_dtm) values (@full_error, sp_name, CONCAT('table name: ', t_name), now());
 			END;
         
 		SELECT true into target_table_exists FROM information_schema.tables WHERE table_schema = database() and table_name = t_name ;

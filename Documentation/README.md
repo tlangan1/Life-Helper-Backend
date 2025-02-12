@@ -11,12 +11,11 @@
   - [Back End](#back-end)
   - [Database](#database)
     - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
+    - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
+    - [Test Driven Database Development](#test-driven-database-development)
     - [mysqlsh.exe](#mysqlshexe)
     - [Miscellaneous](#miscellaneous)
     - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
-  - [Test Driven Database Development](#test-driven-database-development)
-    - [Automate creation of test database](#automate-creation-of-test-database)
-    - [Create Tests](#create-tests)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
@@ -70,85 +69,45 @@
 
 #### Database Upgrade Life Cycle
 
-- When the schema needs to change then that change must first be applied to the testing database, test_life_helper.
+- When the schema needs to change then that change must first be applied to the testing database, test_life_helper, and tested.
 
-  - The first step in any migration is to run the script, `run-baseline-tests.sh` as shown below. This script puts a copy of the production database, life_helper, into the test_life_helper database and runs all existing tests to ensure that all the existing tests do, in fact, pass in an unaltered copy of the production database. This step provides a solid baseline.
-
-  ```
-  ./run-baseline-tests.sh -UnderAWhiteSky1 test_life_helper
-  ```
-
-  - The next step is to create the delta script with which to apply all the changes to the copy of the production environment. Put this script in the schema/tests/delta-scripts folder and reference it from the run-all-tests.sh script.
+  - The first step is to make the changes to the DDL and DML and tests.
+    - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
+    - For any new database objects create the appropriate scripts and add them to the `upgrade_and_test/create_environment.sh` shell script.
+    - If there are any changes to the existing test scripts/objects then make them
+    - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
+  - The second step is to run the built in tests as follows:
     ```
-    ######################################################
-    # Make the changes to the schema that are to be tested
-    ######################################################
+    cd upgrade_and_test
+    ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests copy_from_production
     ```
-  - Create a delta script to apply to test_life_helper
-  - Point the data server to test_life_helper
+    - The parameters have the following meaning:
+      - 1st parameter: password
+      - 2nd parameter: test schema
+      - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
+      - 4th parameter: the value `copy_from_production` causes the test environment to be populated with a copy of the production data. Otherwise, the test environment contains no user entered data.
+    - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
+      ```
+      cd upgrade_and_test
+      ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests copy_from_production
+      ```
+    - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
+      ```
+      cd upgrade_and_test
+      ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
+      ```
+  - Finally, point the data server to test_life_helper to see how the application behaves against the new schema.
 
-- To create the life_helper schema from the scripts execute the shell script `create_schema.sh` as follows:
-  ```
-  ./create_schema.sh -UnderAWhiteSky1 t_life_helper
-  ```
-  - The execute_p_create_table_schema.sql script has a hard-coded `true` being passed to the p_create_table_schema stored procedure. This causes the default behavior of retaining all data. If you want to clear the database of data alter this sql script to pass false.
+#### MySQL Workbench Compare Schemas
+
 - The MySQL Workbench Compare Schemas capability can be used to compare databases. I use this tool to compare life_helper to t_life_helper to ensure that I am keeping the scripts up to date.
   - To use the Compare Schemas capability use the menu option Database->Compare Schemas. Note that if this option is not available then open a New Modal using File->New Modal which should make the option available. See text files in the schema/bootstrap directory for the results. This provides a good high-level view.
   - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
     - diff_stored_procedures.sql
     - diff_triggers.sql
 
-#### mysqlsh.exe
+#### Test Driven Database Development
 
-- Use the following syntax to use mysqlsh from the command line
-  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
-  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
-  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
-  - To check the status of the connection enter `shell.status()`
-  - To exit from the session enter `\quit`
-
-#### Miscellaneous
-
-- `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
-  - I created a stored procedure to remove the foreign keys called `p_drop_all_foreign_keys.sql`. I think this is a tool I may need to use when doing database upgrades but wanting to retain existing data.
-  - I created an analog for the indexes but I do not think it will be used. I did it as an exercise. The stored procedure is called `p_drop_all_non_primary_indexes`
-- `Logging SQL Errors:` There is an entity called sql_error which initially is being used by p_drop_index to persist sql errors.
-  - All stored procedures should contain an error handler that captures all exceptions. This is the syntax for that:
-    ```
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        BEGIN
-        ...
-        rollback; /* If there is a transaction involved */
-        insert into sql_error...
-        END
-    ```
-    This design should ensure that no database errors are returned to the application.
-  - In the event that a database error occurs the Express server should return a `soft` message to the application indicating that something went wrong and that the user should try the operation again and that if it still fails, register a complaint.
-
-#### Hierarchical versus web-like item structure
-
-- I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
-- This is ambitious but I believe it will prove very useful.
-
-### Test Driven Database Development
-
-#### Automate creation of test database
-
-- All tests should be executed in the test environment, the test_life_helper database.
-- The first step in a test is to copy the production database, the life-helper database to the test_life_helper database. To do this run the following command.
-  ```
-  ./create-test-environment.sh -UnderAWhiteSky1
-  ```
-  Note, the ./ is important
-
-#### Create Tests
-
--
-- To run a test uncomment the test at the end of script create-test-environment.sh that you want to run and then execute it as shown below.
-  ```
-  ./create-test-environment.sh -UnderAWhiteSky1 test_life_helper
-  ```
-  Only execute 1 test script at a time as unanticipated interactions between scripts may occur and that could be very confusing.
 - As of 1/16/2025 here are the list of available tests:
   - `p_task_and_goal_trigger_test_1`
   - `p_task_and_goal_trigger_test_2`
@@ -195,6 +154,36 @@
     - start and complete task 1
     - `expect` goal 1 and objective 3 to be completed.
     - `expect` objective 1, objective 2 and goal 3 to remain un-completed.
+
+#### mysqlsh.exe
+
+- Use the following syntax to use mysqlsh from the command line
+  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
+  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
+  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
+  - To check the status of the connection enter `shell.status()`
+  - To exit from the session enter `\quit`
+
+#### Miscellaneous
+
+- `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
+  - I created an analog for the indexes but I do not think it will be used. I did it as an exercise. The stored procedure is called `p_drop_all_non_primary_indexes`
+- `Logging SQL Errors:` There is an entity called sql_error which initially is being used by p_drop_index to persist sql errors.
+  - All stored procedures should contain an error handler that captures all exceptions. This is the syntax for that:
+    ```
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+        BEGIN
+        ...
+        rollback; /* If there is a transaction involved */
+        insert into sql_error...
+        END
+    ```
+    This design should ensure that no database errors are returned to the application.
+
+#### Hierarchical versus web-like item structure
+
+- I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
+- This is ambitious but I believe it will prove very useful.
 
 ### Root CA Management
 

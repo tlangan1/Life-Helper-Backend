@@ -18,13 +18,19 @@ ON goal FOR EACH ROW
     
     drop temporary table if exists trigger_goal_update_temp;
     
-    -- Since task_id never changes once a task is created then OLD.task_id = NEW.task_id
+    -- Since goal_id never changes once a goal is created then OLD.goal_id = NEW.goal_id
     set @goal_id = OLD.goal_id;
 
     IF OLD.started_dtm is null AND NEW.started_dtm is not null THEN
+		-- This logic enforces the integrity of the data. It ensures
+        -- that if an objective relies on one or more goals and at least one
+        -- of them has been started then the objective should be in the 
+        -- started state. The logic is enforced as follows:
 		-- A goal has been started. If there are any objectives for which 
         -- this is the first of their goals to be started then
         -- the objective should be marked as started.
+        -- Analogous logic is applied to the relationship between
+        -- goals and tasks in the task update trigger.
 
 		Insert into trigger_log (statement) select "In the started IF";
         
@@ -38,9 +44,15 @@ ON goal FOR EACH ROW
 		drop temporary table if exists trigger_goal_update_temp;
     END IF;
     IF OLD.completed_dtm is null AND NEW.completed_dtm is not null THEN
+		-- This logic enforces the integrity of the data. It ensures
+        -- that if an objective relies on one or more goals and all of them
+        -- have been completed then the objective should be in the completed
+        -- state. The logic is enforced as follows:
 		-- A goal has been completed. If there are no other open goals
-        -- associated with any of the objective it applies to
-        -- then each of those objective should be completed.
+        -- associated with any of the objectives it applies to then each of
+        -- those objectives should be completed.
+        -- Analogous logic is applied to the relationship between
+        -- goals and tasks in the task update trigger.
         
 		Insert into trigger_log (statement) select "In the completed IF";
 

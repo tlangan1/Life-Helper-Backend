@@ -15,7 +15,7 @@ create procedure p_create_sql_error()
 		sql_error varchar(1024) Not Null,
 		stored_procedure_name varchar(50) not null,
         additional_information varchar(1024) not null,
-		create_dtm datetime default current_timestamp not null,
+		created_dtm datetime default current_timestamp not null,
 		PRIMARY KEY (sql_error_id)
 	);
     END //

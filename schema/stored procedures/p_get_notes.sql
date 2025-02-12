@@ -12,7 +12,7 @@ BEGIN
     SET @SQL = CONCAT(@SQL, '_id = xn.', @type, '_id');
     SET @SQL = CONCAT(@SQL, ' inner join note n on xn.note_id = n.note_id');
     SET @SQL = CONCAT(@SQL, ' where x.', @type, '_id = ', @item_id);
-    SET @SQL = CONCAT(@SQL, ' order by n.create_dtm desc');
+    SET @SQL = CONCAT(@SQL, ' order by n.created_dtm desc');
 
 	PREPARE prepared_statement FROM @SQL;
 	EXECUTE prepared_statement;

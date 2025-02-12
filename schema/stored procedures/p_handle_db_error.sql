@@ -12,7 +12,7 @@ CREATE PROCEDURE p_handle_db_error(IN error_event_information varchar(1000))
 		SET @sql_error = CONCAT('ERROR errno ', @error_no, ' (sqlstate ', @sql_state, '): ', @error_text);
         
         select @sp_name as 'stored procedure name', @error_information as 'SQL error', @additional_information as 'Additional Information';
-		INSERT INTO sql_error (sql_error, stored_procedure_name, additional_information, create_dtm) values (@sql_error, @sp_name, @additional_information, now());
+		INSERT INTO sql_error (sql_error, stored_procedure_name, additional_information, created_dtm) values (@sql_error, @sp_name, @additional_information, now());
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = @error_text;
     END //

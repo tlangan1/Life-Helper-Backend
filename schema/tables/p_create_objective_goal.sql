@@ -10,7 +10,7 @@ create procedure p_create_objective_goal()
 		objective_id int not null,
 		goal_id int not null,
 		deleted_dtm datetime null,
-		create_dtm datetime default current_timestamp not null,
+		created_dtm datetime default current_timestamp not null,
 		PRIMARY KEY (objective_id, goal_id)
 	);
 	END //
