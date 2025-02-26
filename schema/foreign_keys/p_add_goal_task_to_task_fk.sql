@@ -1,4 +1,3 @@
--- Add all goal_task foreign keys
 drop procedure if exists p_add_goal_task_to_task_fk;
 
 DELIMITER //

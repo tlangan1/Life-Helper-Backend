@@ -73,7 +73,7 @@
 
   - The first step is to make the changes to the DDL and DML and tests.
     - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
-    - For any new database objects create the appropriate scripts and add them to the `upgrade_and_test/create_environment.sh` shell script.
+    - For any new database objects create the appropriate scripts and add them to the `upgrade_and_test/create_test_environment.sh` shell script.
     - If there are any changes to the existing test scripts/objects then make them
     - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
   - The second step is to run the built in tests as follows:
@@ -100,7 +100,7 @@
 
 #### MySQL Workbench Compare Schemas
 
-- The MySQL Workbench Compare Schemas capability can be used to compare databases. I use this tool to compare life_helper to t_life_helper to ensure that I am keeping the scripts up to date.
+- The MySQL Workbench Compare Schemas capability can be used to compare databases.
   - To use the Compare Schemas capability use the menu option Database->Compare Schemas. Note that if this option is not available then open a New Modal using File->New Modal which should make the option available. See text files in the schema/bootstrap directory for the results. This provides a good high-level view.
   - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
     - diff_stored_procedures.sql

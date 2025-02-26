@@ -8,7 +8,7 @@
 # 4th Argument : copy_from_production to populate it with the production schema and data otherwise just leave it empty.
 
 
-./create_environment.sh $1 $2 $4
+./create_test_environment.sh $1 $2 $4
 
 ./load_existing_test_objects.sh $1 $2
 

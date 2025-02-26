@@ -12,6 +12,7 @@ create procedure p_create_web_push_subscription()
 
 	create table web_push_subscription (
 		web_push_subscription_id int not null auto_increment,
+        domain_name varchar(100) not null,
 		capability_url varchar(250) not null,
 		public_key varchar(100) not null,
 		private_key varchar(100) not null,

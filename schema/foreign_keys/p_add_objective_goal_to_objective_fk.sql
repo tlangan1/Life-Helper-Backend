@@ -1,4 +1,3 @@
--- Add all objective_goal foreign keys
 drop procedure if exists p_add_objective_goal_to_objective_fk;
 
 DELIMITER //
