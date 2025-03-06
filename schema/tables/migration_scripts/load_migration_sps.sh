@@ -36,3 +36,4 @@
 
 ../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_web_push_subscription.sql"
 
+../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_task_user.sql"

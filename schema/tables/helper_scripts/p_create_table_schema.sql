@@ -10,6 +10,7 @@ create procedure p_create_table_schema(IN preserve_data bool)
     call p_create_table('objective_note', preserve_data);
     call p_create_table('goal_note', preserve_data);
     call p_create_table('task_note', preserve_data);
+    call p_create_table('task_user', preserve_data);
 
     call p_create_table('web_push_subscription', preserve_data);
     call p_create_table('sql_error', preserve_data);

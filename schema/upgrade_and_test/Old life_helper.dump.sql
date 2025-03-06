@@ -331,349 +331,6 @@ LOCK TABLES `sql_error` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `t_goal`
---
-
-DROP TABLE IF EXISTS `t_goal`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_goal` (
-  `goal_id` int NOT NULL DEFAULT '0',
-  `item_name` varchar(50) NOT NULL,
-  `item_description` varchar(1000) NOT NULL,
-  `started_dtm` datetime DEFAULT NULL,
-  `completed_dtm` datetime DEFAULT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_update_dtm` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_goal`
---
-
-LOCK TABLES `t_goal` WRITE;
-/*!40000 ALTER TABLE `t_goal` DISABLE KEYS */;
-INSERT INTO `t_goal` VALUES (1,'Backup the \"life_helper\" database regularly','',NULL,NULL,NULL,'2025-02-12 15:07:43',NULL),(2,'Maintain Life Helper documentation','','2025-02-12 19:11:04',NULL,NULL,'2025-02-12 15:08:23','2025-02-12 19:11:04'),(3,'Allow links to be added to descriptions and notes','',NULL,NULL,NULL,'2025-02-12 15:12:24',NULL),(4,'Don\'t allow logically orphaned items.','For example, If a goal has tasks that are not all canceled than don\'t allow the goal to be cancelled. Likewise, if an objective has goals that are not all canceled than don\'t allow the objective to be cancelled.',NULL,NULL,NULL,'2025-02-12 15:13:47',NULL),(5,'Service worker enhancements','',NULL,NULL,NULL,'2025-02-12 15:14:40',NULL),(6,'Create the ability to attach goals and tasks','Enhance Life Helper to allow an existing goal to be attached to an objective or an existing task to be attached to a goal.',NULL,NULL,NULL,'2025-02-12 15:17:40',NULL),(7,'Use CSS nesting where applicable and useful','',NULL,NULL,NULL,'2025-02-12 15:20:38',NULL),(8,'Add an assigned to me checkbox in the filters','',NULL,NULL,NULL,'2025-02-12 15:22:15',NULL),(9,'When navigating around site remember the list.','When a user navigates away from the list remember where they were and return them there.',NULL,NULL,NULL,'2025-02-12 15:22:52',NULL),(10,'Associate a user with a started task','','2025-02-19 18:07:19',NULL,NULL,'2025-02-12 15:23:38','2025-02-19 18:07:19'),(11,'Create a log of the time a use worked on tasks','See the README Enhancements->Associate users with tasks description for the implementation details.',NULL,NULL,NULL,'2025-02-12 15:24:07',NULL),(12,'Miscellaneous enhancements','','2025-02-19 17:59:56',NULL,NULL,'2025-02-12 15:25:52','2025-02-19 17:59:56'),(13,'Add a confirm email step to registration','',NULL,NULL,NULL,'2025-02-12 15:27:46',NULL),(14,'Create a daily task list that is user specific','This is a list of tasks that the user can create that pop up every day to be completed and that are not associated with goals or objectives. This is just a list of tasks and can be reordered by the user using drag and drop.',NULL,NULL,NULL,'2025-02-12 15:28:41',NULL),(15,'Search Capability to find keywords','Add a search capability to find keywords in various textual data in the database and return a list of items that qualify.',NULL,NULL,NULL,'2025-02-12 15:29:40',NULL),(16,'Implement Federated Login','',NULL,NULL,NULL,'2025-02-12 15:30:25',NULL),(17,'Explore need for diff and missing sql in bootstrap','I don\'t think the diff and missing sql scripts in bootstrap are necessary, the MySQL comparison tools should be sufficient.',NULL,NULL,'2025-02-19 15:31:12','2025-02-12 15:30:53','2025-02-19 15:31:12'),(18,'Scaffold this app','Start with a bare bone VITE scaffolding using TypeScript and SolidJS.',NULL,NULL,NULL,'2025-02-12 15:43:54',NULL),(19,'Create a run date store','Create a run date store and use it to enforce the one-run-per-day rule.',NULL,NULL,NULL,'2025-02-12 15:44:47',NULL),(20,'Complete \"Web Authentication APIs\" Tutorial','',NULL,NULL,NULL,'2025-02-12 15:47:43',NULL),(21,'Integrate this functionality into Life Helper','',NULL,NULL,NULL,'2025-02-12 15:47:52',NULL),(22,'Watch this video','https://www.youtube.com/watch?v=mC76YxBpwAQ',NULL,NULL,NULL,'2025-02-12 15:48:33',NULL),(23,'Return to this tutorial after watching this video','https://www.youtube.com/watch?v=mC76YxBpwAQ',NULL,NULL,NULL,'2025-02-12 15:49:33',NULL),(24,'Miscellaneous enhancements','',NULL,NULL,NULL,'2025-02-12 15:50:35',NULL),(25,'Test goal for test Objective','',NULL,NULL,NULL,'2025-02-14 14:36:16',NULL),(26,'Implement Fetch Timeouts','','2025-02-19 13:47:13',NULL,NULL,'2025-02-19 12:46:46','2025-02-19 13:47:13'),(27,'Push events to application','If a user has signed up for web push then they will receive web pushes for all data updates','2025-02-19 15:36:56','2025-02-19 17:50:26',NULL,'2025-02-19 15:35:41','2025-02-19 17:50:26'),(28,'Create a list of assigned tasks ','Create a list of tasks which the user is currently  working on.',NULL,NULL,NULL,'2025-02-19 18:03:11',NULL);
-/*!40000 ALTER TABLE `t_goal` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_goal_note`
---
-
-DROP TABLE IF EXISTS `t_goal_note`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_goal_note` (
-  `goal_id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_goal_note`
---
-
-LOCK TABLES `t_goal_note` WRITE;
-/*!40000 ALTER TABLE `t_goal_note` DISABLE KEYS */;
-INSERT INTO `t_goal_note` VALUES (25,1,NULL,'2025-02-14 14:37:09');
-/*!40000 ALTER TABLE `t_goal_note` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_goal_task`
---
-
-DROP TABLE IF EXISTS `t_goal_task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_goal_task` (
-  `goal_id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_goal_task`
---
-
-LOCK TABLES `t_goal_task` WRITE;
-/*!40000 ALTER TABLE `t_goal_task` DISABLE KEYS */;
-INSERT INTO `t_goal_task` VALUES (2,1,NULL,'2025-02-12 15:09:52'),(2,2,NULL,'2025-02-12 15:10:59'),(2,11,NULL,'2025-02-19 12:46:02'),(5,3,NULL,'2025-02-12 15:15:34'),(5,6,NULL,'2025-02-12 15:29:18'),(6,4,NULL,'2025-02-12 15:18:49'),(10,16,NULL,'2025-02-19 18:07:15'),(12,5,NULL,'2025-02-12 15:26:05'),(12,9,NULL,'2025-02-12 15:57:41'),(12,10,NULL,'2025-02-12 15:59:26'),(12,17,NULL,'2025-02-25 10:15:51'),(18,7,NULL,'2025-02-12 15:44:24'),(24,8,NULL,'2025-02-12 15:50:53'),(26,12,NULL,'2025-02-19 12:47:29'),(26,13,NULL,'2025-02-19 12:47:35'),(26,14,NULL,'2025-02-19 12:47:56'),(27,15,NULL,'2025-02-19 15:36:46');
-/*!40000 ALTER TABLE `t_goal_task` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_note`
---
-
-DROP TABLE IF EXISTS `t_note`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_note` (
-  `note_id` int NOT NULL DEFAULT '0',
-  `note` varchar(1000) NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_note`
---
-
-LOCK TABLES `t_note` WRITE;
-/*!40000 ALTER TABLE `t_note` DISABLE KEYS */;
-INSERT INTO `t_note` VALUES (1,'Test note for test goal',NULL,'2025-02-14 14:37:09');
-/*!40000 ALTER TABLE `t_note` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_objective`
---
-
-DROP TABLE IF EXISTS `t_objective`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_objective` (
-  `objective_id` int NOT NULL DEFAULT '0',
-  `item_name` varchar(50) NOT NULL,
-  `item_description` varchar(1000) NOT NULL,
-  `started_dtm` datetime DEFAULT NULL,
-  `completed_dtm` datetime DEFAULT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_update_dtm` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_objective`
---
-
-LOCK TABLES `t_objective` WRITE;
-/*!40000 ALTER TABLE `t_objective` DISABLE KEYS */;
-INSERT INTO `t_objective` VALUES (1,'Create the Life Helper Application','','2025-02-12 19:11:04',NULL,NULL,'2025-02-12 15:05:16','2025-02-12 19:11:04'),(2,'Create a NWS Prediction Tracker','Build this application using TypeScript and VITE. Deploy it to GitHub using the GitHub Actions and not from a branch so that index.html does not have to reside at the root of the project.',NULL,NULL,NULL,'2025-02-12 15:43:24',NULL),(3,'Master Web Authentication','',NULL,NULL,NULL,'2025-02-12 15:47:21',NULL),(4,'Study Artificial Intelligence','',NULL,NULL,NULL,'2025-02-12 15:48:11',NULL),(5,'Enhance my resume','',NULL,NULL,NULL,'2025-02-12 15:50:06',NULL),(6,'Test Objective','',NULL,NULL,NULL,'2025-02-14 14:35:51',NULL);
-/*!40000 ALTER TABLE `t_objective` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_objective_goal`
---
-
-DROP TABLE IF EXISTS `t_objective_goal`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_objective_goal` (
-  `objective_id` int NOT NULL,
-  `goal_id` int NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_objective_goal`
---
-
-LOCK TABLES `t_objective_goal` WRITE;
-/*!40000 ALTER TABLE `t_objective_goal` DISABLE KEYS */;
-INSERT INTO `t_objective_goal` VALUES (1,1,NULL,'2025-02-12 15:07:43'),(1,2,NULL,'2025-02-12 15:08:23'),(1,3,NULL,'2025-02-12 15:12:24'),(1,4,NULL,'2025-02-12 15:13:47'),(1,5,NULL,'2025-02-12 15:14:40'),(1,6,NULL,'2025-02-12 15:17:40'),(1,7,NULL,'2025-02-12 15:20:38'),(1,8,NULL,'2025-02-12 15:22:15'),(1,9,NULL,'2025-02-12 15:22:52'),(1,10,NULL,'2025-02-12 15:23:38'),(1,11,NULL,'2025-02-12 15:24:07'),(1,12,NULL,'2025-02-12 15:25:52'),(1,13,NULL,'2025-02-12 15:27:46'),(1,14,NULL,'2025-02-12 15:28:41'),(1,15,NULL,'2025-02-12 15:29:40'),(1,16,NULL,'2025-02-12 15:30:25'),(1,17,NULL,'2025-02-12 15:30:53'),(1,26,NULL,'2025-02-19 12:46:46'),(1,27,NULL,'2025-02-19 15:35:41'),(1,28,NULL,'2025-02-19 18:03:11'),(2,18,NULL,'2025-02-12 15:43:54'),(2,19,NULL,'2025-02-12 15:44:47'),(3,20,NULL,'2025-02-12 15:47:43'),(3,21,NULL,'2025-02-12 15:47:52'),(4,22,NULL,'2025-02-12 15:48:33'),(4,23,NULL,'2025-02-12 15:49:33'),(5,24,NULL,'2025-02-12 15:50:35'),(6,25,NULL,'2025-02-14 14:36:16');
-/*!40000 ALTER TABLE `t_objective_goal` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_objective_note`
---
-
-DROP TABLE IF EXISTS `t_objective_note`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_objective_note` (
-  `objective_id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_objective_note`
---
-
-LOCK TABLES `t_objective_note` WRITE;
-/*!40000 ALTER TABLE `t_objective_note` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_objective_note` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_sql_error`
---
-
-DROP TABLE IF EXISTS `t_sql_error`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_sql_error` (
-  `sql_error_id` int NOT NULL DEFAULT '0',
-  `sql_error` varchar(1024) NOT NULL,
-  `stored_procedure_name` varchar(50) NOT NULL,
-  `additional_information` varchar(1024) NOT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_sql_error`
---
-
-LOCK TABLES `t_sql_error` WRITE;
-/*!40000 ALTER TABLE `t_sql_error` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_sql_error` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_task`
---
-
-DROP TABLE IF EXISTS `t_task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_task` (
-  `task_id` int NOT NULL DEFAULT '0',
-  `item_name` varchar(50) NOT NULL,
-  `item_description` varchar(1000) NOT NULL,
-  `started_dtm` datetime DEFAULT NULL,
-  `paused_dtm` datetime DEFAULT NULL,
-  `completed_dtm` datetime DEFAULT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_update_dtm` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_task`
---
-
-LOCK TABLES `t_task` WRITE;
-/*!40000 ALTER TABLE `t_task` DISABLE KEYS */;
-INSERT INTO `t_task` VALUES (1,'Include the new routes in the documentation','I do not think the isProduction and possibly the login and registration routes are documented.','2025-02-12 19:11:04',NULL,'2025-02-12 19:11:07',NULL,'2025-02-12 15:09:52','2025-02-12 19:11:07'),(2,'Document the registration and login mechanisms','',NULL,NULL,NULL,NULL,'2025-02-12 15:10:59',NULL),(3,'Prevent requesting multiple web push subscription ','',NULL,NULL,NULL,NULL,'2025-02-12 15:15:34',NULL),(4,'Create an attach item route','',NULL,NULL,NULL,NULL,'2025-02-12 15:18:49',NULL),(5,'Navigate to Home after logging in','','2025-02-19 17:59:56',NULL,'2025-02-19 17:59:58',NULL,'2025-02-12 15:26:05','2025-02-19 17:59:58'),(6,'Disable Web Push Request Button when appropriate','Disable the Request A Web Push Subscription\" button if the service worker sends a message that it has been activated.\"',NULL,NULL,NULL,NULL,'2025-02-12 15:29:18',NULL),(7,'Use this TypeScript advice','See this site, https://dev.to/fkrasnowski/simple-kv-storage-on-top-of-indexeddb-3jcg to assist in building the promise based solution.',NULL,NULL,NULL,NULL,'2025-02-12 15:44:24',NULL),(8,'Add Full stack to the resume','',NULL,NULL,NULL,NULL,'2025-02-12 15:50:53',NULL),(9,'Put service worker buttons in account route','Put the \"web push request\" and the \"send the service worker a message\" buttons on the account panel.',NULL,NULL,NULL,NULL,'2025-02-12 15:57:41',NULL),(10,'Replace failed login alert with a DOM message','Instead of displaying \"login failed\" as an alert, use the DOM to communicate the failure.',NULL,NULL,NULL,NULL,'2025-02-12 15:59:26',NULL),(11,'Document response payloads in Express README','','2025-02-19 15:12:00',NULL,'2025-02-19 15:12:02',NULL,'2025-02-19 12:46:02','2025-02-19 15:12:02'),(12,'Add a fetch timeout for post requests','','2025-02-19 15:29:11','2025-02-19 17:48:58',NULL,NULL,'2025-02-19 12:47:29','2025-02-19 17:48:58'),(13,'Add a fetch timeout for get requests','','2025-02-19 13:47:13','2025-02-19 17:48:50',NULL,NULL,'2025-02-19 12:47:35','2025-02-19 17:48:50'),(14,'Ignore fetch timeouts in \"dev\" mode','',NULL,NULL,NULL,NULL,'2025-02-19 12:47:56',NULL),(15,'Enable web pushes for goals and objectives','Note, tasks already function','2025-02-19 15:36:56',NULL,'2025-02-19 17:50:26',NULL,'2025-02-19 15:36:46','2025-02-19 17:50:26'),(16,'Design a way to associate users with tasks','','2025-02-19 18:07:19',NULL,NULL,NULL,'2025-02-19 18:07:15','2025-02-19 18:07:19'),(17,'Add domain name to web_push_subscription entity.','','2025-02-25 10:15:55',NULL,NULL,NULL,'2025-02-25 10:15:51','2025-02-25 10:15:55');
-/*!40000 ALTER TABLE `t_task` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_task_note`
---
-
-DROP TABLE IF EXISTS `t_task_note`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_task_note` (
-  `task_id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `deleted_dtm` datetime DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_task_note`
---
-
-LOCK TABLES `t_task_note` WRITE;
-/*!40000 ALTER TABLE `t_task_note` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_task_note` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_trigger_log`
---
-
-DROP TABLE IF EXISTS `t_trigger_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_trigger_log` (
-  `trigger_log_id` int NOT NULL DEFAULT '0',
-  `statement` varchar(100) DEFAULT NULL,
-  `integer_result` int DEFAULT NULL,
-  `string_result` varchar(100) DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_trigger_log`
---
-
-LOCK TABLES `t_trigger_log` WRITE;
-/*!40000 ALTER TABLE `t_trigger_log` DISABLE KEYS */;
-INSERT INTO `t_trigger_log` VALUES (1,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 15:55:21'),(2,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:04'),(3,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(4,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 19:11:04'),(5,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(6,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(7,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(8,'In the completed IF',NULL,NULL,'2025-02-12 19:11:07'),(9,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:47:13'),(10,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(11,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 13:47:13'),(12,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(13,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:17'),(14,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:19'),(15,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:43'),(16,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:47'),(17,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:50'),(18,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:30'),(19,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:34'),(20,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:45'),(21,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:00'),(22,'In the started IF',NULL,NULL,'2025-02-19 15:12:00'),(23,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(24,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(25,'In the completed IF',NULL,NULL,'2025-02-19 15:12:02'),(26,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:29:11'),(27,'In the started IF',NULL,NULL,'2025-02-19 15:29:11'),(28,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:31:12'),(29,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:36:56'),(30,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(31,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:36:56'),(32,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(33,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:50'),(34,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:58'),(35,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(36,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(37,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(38,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:50:26'),(39,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(40,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:56'),(41,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(42,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:59:56'),(43,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(44,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(45,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(46,'In the completed IF',NULL,NULL,'2025-02-19 17:59:58'),(47,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 18:07:19'),(48,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(49,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 18:07:19'),(50,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(51,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-25 10:15:55'),(52,'In the started IF',NULL,NULL,'2025-02-25 10:15:55');
-/*!40000 ALTER TABLE `t_trigger_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_user_login`
---
-
-DROP TABLE IF EXISTS `t_user_login`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_user_login` (
-  `user_login_id` int NOT NULL DEFAULT '0',
-  `user_name` varchar(30) NOT NULL,
-  `hashed_password` varchar(100) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `display_name` varchar(30) NOT NULL,
-  `email_address` varchar(100) DEFAULT NULL,
-  `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_dtm` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_user_login`
---
-
-LOCK TABLES `t_user_login` WRITE;
-/*!40000 ALTER TABLE `t_user_login` DISABLE KEYS */;
-INSERT INTO `t_user_login` VALUES (1,'Tom.Langan@Comcast.net','$2b$10$bKNmdmCM.WC.wjfmSavLZuzxgVrRLtL3aGlOZFVnAljgcG5g6qN5.','Thomas H Langan','Thomas','Tom.Langan@Comcast.net','2025-02-13 10:02:39',NULL);
-/*!40000 ALTER TABLE `t_user_login` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_web_push_subscription`
---
-
-DROP TABLE IF EXISTS `t_web_push_subscription`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_web_push_subscription` (
-  `web_push_subscription_id` int NOT NULL DEFAULT '0',
-  `capability_url` varchar(250) NOT NULL,
-  `public_key` varchar(100) NOT NULL,
-  `private_key` varchar(100) NOT NULL,
-  `subscribed_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `unsubscribed_or_expired_dtm` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_web_push_subscription`
---
-
-LOCK TABLES `t_web_push_subscription` WRITE;
-/*!40000 ALTER TABLE `t_web_push_subscription` DISABLE KEYS */;
-INSERT INTO `t_web_push_subscription` VALUES (4,'https://fcm.googleapis.com/fcm/send/fPyXIz1Sics:APA91bHxUDOTegKvpS5EpbG5-2-zyeKoJtd_GnWoe3s9KnueDeBogrSmPPv6o7XRZy3pCtupbpjUVlcvngnFWEra1f9mY0q6f5RH3n7AkFYf8IDjmuBgufzcnCroIlcb4quneIqS0FqP','BPHuI-JEG2KCvT8xm1nuw1Urz9dNlMrDISWh1hvcuwbniou5iplBXE0aQXtapSFfmN_F2TyjBL8uVNgFVZtVLP4','FuqWYxSp_dn2Hk5sfefAfA','2025-01-04 08:25:37',NULL),(5,'https://fcm.googleapis.com/fcm/send/fTOuK5kqMYw:APA91bGdUq5SmjpzJOjovFXgplJ58lpcHjvt35mHN-O90oI3PnfgN6CLvFTWwa0u23WzGXSrTHdUF_SwFgURmJVQHY1zE2l47QkI0n1-Tw0OZbuRdFNmR0FgInRdpgLhUZkcIX4USZrl','BDtL5ZtxBMjWDtb31sCkdyjA5f2DcY9JF5Mgxv-6h_3a32FHnTN0Fo2dno0Ne6f_xP4BTkE68iLcZm-CCekQMBM','fzbibL2SOjScBAAb07mzJQ','2025-02-19 13:53:38',NULL);
-/*!40000 ALTER TABLE `t_web_push_subscription` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `task`
 --
 
@@ -700,7 +357,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'Include the new routes in the documentation','I do not think the isProduction and possibly the login and registration routes are documented.','2025-02-12 19:11:04',NULL,'2025-02-12 19:11:07',NULL,'2025-02-12 15:09:52','2025-02-12 19:11:07'),(2,'Document the registration and login mechanisms','',NULL,NULL,NULL,NULL,'2025-02-12 15:10:59',NULL),(3,'Prevent requesting multiple web push subscription ','',NULL,NULL,NULL,NULL,'2025-02-12 15:15:34',NULL),(4,'Create an attach item route','',NULL,NULL,NULL,NULL,'2025-02-12 15:18:49',NULL),(5,'Navigate to Home after logging in','','2025-02-19 17:59:56',NULL,'2025-02-19 17:59:58',NULL,'2025-02-12 15:26:05','2025-02-19 17:59:58'),(6,'Disable Web Push Request Button when appropriate','Disable the Request A Web Push Subscription\" button if the service worker sends a message that it has been activated.\"',NULL,NULL,NULL,NULL,'2025-02-12 15:29:18',NULL),(7,'Use this TypeScript advice','See this site, https://dev.to/fkrasnowski/simple-kv-storage-on-top-of-indexeddb-3jcg to assist in building the promise based solution.',NULL,NULL,NULL,NULL,'2025-02-12 15:44:24',NULL),(8,'Add Full stack to the resume','',NULL,NULL,NULL,NULL,'2025-02-12 15:50:53',NULL),(9,'Put service worker buttons in account route','Put the \"web push request\" and the \"send the service worker a message\" buttons on the account panel.',NULL,NULL,NULL,NULL,'2025-02-12 15:57:41',NULL),(10,'Replace failed login alert with a DOM message','Instead of displaying \"login failed\" as an alert, use the DOM to communicate the failure.',NULL,NULL,NULL,NULL,'2025-02-12 15:59:26',NULL),(11,'Document response payloads in Express README','','2025-02-19 15:12:00',NULL,'2025-02-19 15:12:02',NULL,'2025-02-19 12:46:02','2025-02-19 15:12:02'),(12,'Add a fetch timeout for post requests','','2025-02-19 15:29:11','2025-02-19 17:48:58',NULL,NULL,'2025-02-19 12:47:29','2025-02-19 17:48:58'),(13,'Add a fetch timeout for get requests','','2025-02-19 13:47:13','2025-02-19 17:48:50',NULL,NULL,'2025-02-19 12:47:35','2025-02-19 17:48:50'),(14,'Ignore fetch timeouts in \"dev\" mode','',NULL,NULL,NULL,NULL,'2025-02-19 12:47:56',NULL),(15,'Enable web pushes for goals and objectives','Note, tasks already function','2025-02-19 15:36:56',NULL,'2025-02-19 17:50:26',NULL,'2025-02-19 15:36:46','2025-02-19 17:50:26'),(16,'Design a way to associate users with tasks','','2025-02-19 18:07:19',NULL,NULL,NULL,'2025-02-19 18:07:15','2025-02-27 13:23:01'),(17,'Add domain name to web_push_subscription entity.','','2025-02-25 10:15:55',NULL,NULL,NULL,'2025-02-25 10:15:51','2025-02-25 10:15:55');
+INSERT INTO `task` VALUES (1,'Include the new routes in the documentation','I do not think the isProduction and possibly the login and registration routes are documented.','2025-02-12 19:11:04',NULL,'2025-02-12 19:11:07',NULL,'2025-02-12 15:09:52','2025-02-12 19:11:07'),(2,'Document the registration and login mechanisms','',NULL,NULL,NULL,NULL,'2025-02-12 15:10:59',NULL),(3,'Prevent requesting multiple web push subscription ','',NULL,NULL,NULL,NULL,'2025-02-12 15:15:34',NULL),(4,'Create an attach item route','',NULL,NULL,NULL,NULL,'2025-02-12 15:18:49',NULL),(5,'Navigate to Home after logging in','','2025-02-19 17:59:56',NULL,'2025-02-19 17:59:58',NULL,'2025-02-12 15:26:05','2025-02-19 17:59:58'),(6,'Disable Web Push Request Button when appropriate','Disable the Request A Web Push Subscription\" button if the service worker sends a message that it has been activated.\"',NULL,NULL,NULL,NULL,'2025-02-12 15:29:18',NULL),(7,'Use this TypeScript advice','See this site, https://dev.to/fkrasnowski/simple-kv-storage-on-top-of-indexeddb-3jcg to assist in building the promise based solution.',NULL,NULL,NULL,NULL,'2025-02-12 15:44:24',NULL),(8,'Add Full stack to the resume','',NULL,NULL,NULL,NULL,'2025-02-12 15:50:53',NULL),(9,'Put service worker buttons in account route','Put the \"web push request\" and the \"send the service worker a message\" buttons on the account panel.',NULL,NULL,NULL,NULL,'2025-02-12 15:57:41',NULL),(10,'Replace failed login alert with a DOM message','Instead of displaying \"login failed\" as an alert, use the DOM to communicate the failure.',NULL,NULL,NULL,NULL,'2025-02-12 15:59:26',NULL),(11,'Document response payloads in Express README','','2025-02-19 15:12:00',NULL,'2025-02-19 15:12:02',NULL,'2025-02-19 12:46:02','2025-02-19 15:12:02'),(12,'Add a fetch timeout for post requests','','2025-02-19 15:29:11','2025-02-19 17:48:58',NULL,NULL,'2025-02-19 12:47:29','2025-02-19 17:48:58'),(13,'Add a fetch timeout for get requests','','2025-02-19 13:47:13','2025-02-19 17:48:50',NULL,NULL,'2025-02-19 12:47:35','2025-02-19 17:48:50'),(14,'Ignore fetch timeouts in \"dev\" mode','',NULL,NULL,NULL,NULL,'2025-02-19 12:47:56',NULL),(15,'Enable web pushes for goals and objectives','Note, tasks already function','2025-02-19 15:36:56',NULL,'2025-02-19 17:50:26',NULL,'2025-02-19 15:36:46','2025-02-19 17:50:26'),(16,'Design a way to associate users with tasks','','2025-02-19 18:07:19',NULL,NULL,NULL,'2025-02-19 18:07:15','2025-02-19 18:07:19'),(17,'Add domain name to web_push_subscription entity.','','2025-02-25 10:15:55',NULL,NULL,NULL,'2025-02-25 10:15:51','2025-02-25 10:15:55');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -833,7 +490,7 @@ CREATE TABLE `trigger_log` (
   `string_result` varchar(100) DEFAULT NULL,
   `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`trigger_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -842,7 +499,7 @@ CREATE TABLE `trigger_log` (
 
 LOCK TABLES `trigger_log` WRITE;
 /*!40000 ALTER TABLE `trigger_log` DISABLE KEYS */;
-INSERT INTO `trigger_log` VALUES (1,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 15:55:21'),(2,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:04'),(3,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(4,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 19:11:04'),(5,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(6,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(7,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(8,'In the completed IF',NULL,NULL,'2025-02-12 19:11:07'),(9,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:47:13'),(10,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(11,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 13:47:13'),(12,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(13,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:17'),(14,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:19'),(15,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:43'),(16,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:47'),(17,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:50'),(18,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:30'),(19,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:34'),(20,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:45'),(21,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:00'),(22,'In the started IF',NULL,NULL,'2025-02-19 15:12:00'),(23,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(24,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(25,'In the completed IF',NULL,NULL,'2025-02-19 15:12:02'),(26,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:29:11'),(27,'In the started IF',NULL,NULL,'2025-02-19 15:29:11'),(28,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:31:12'),(29,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:36:56'),(30,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(31,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:36:56'),(32,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(33,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:50'),(34,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:58'),(35,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(36,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(37,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(38,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:50:26'),(39,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(40,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:56'),(41,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(42,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:59:56'),(43,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(44,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(45,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(46,'In the completed IF',NULL,NULL,'2025-02-19 17:59:58'),(47,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 18:07:19'),(48,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(49,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 18:07:19'),(50,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(51,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-25 10:15:55'),(52,'In the started IF',NULL,NULL,'2025-02-25 10:15:55'),(53,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-27 12:08:18'),(54,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-27 12:08:19'),(55,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-27 12:12:19'),(56,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-27 13:23:01');
+INSERT INTO `trigger_log` VALUES (1,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 15:55:21'),(2,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:04'),(3,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(4,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-12 19:11:04'),(5,'In the started IF',NULL,NULL,'2025-02-12 19:11:04'),(6,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(7,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-12 19:11:07'),(8,'In the completed IF',NULL,NULL,'2025-02-12 19:11:07'),(9,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:47:13'),(10,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(11,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 13:47:13'),(12,'In the started IF',NULL,NULL,'2025-02-19 13:47:13'),(13,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:17'),(14,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:49:19'),(15,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:43'),(16,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:47'),(17,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:52:50'),(18,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:30'),(19,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:34'),(20,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 13:53:45'),(21,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:00'),(22,'In the started IF',NULL,NULL,'2025-02-19 15:12:00'),(23,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(24,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:12:02'),(25,'In the completed IF',NULL,NULL,'2025-02-19 15:12:02'),(26,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:29:11'),(27,'In the started IF',NULL,NULL,'2025-02-19 15:29:11'),(28,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:31:12'),(29,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 15:36:56'),(30,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(31,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 15:36:56'),(32,'In the started IF',NULL,NULL,'2025-02-19 15:36:56'),(33,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:50'),(34,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:48:58'),(35,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(36,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:50:26'),(37,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(38,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:50:26'),(39,'In the completed IF',NULL,NULL,'2025-02-19 17:50:26'),(40,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:56'),(41,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(42,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 17:59:56'),(43,'In the started IF',NULL,NULL,'2025-02-19 17:59:56'),(44,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(45,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 17:59:58'),(46,'In the completed IF',NULL,NULL,'2025-02-19 17:59:58'),(47,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-19 18:07:19'),(48,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(49,'In the trigger, trigger_goal_update',NULL,NULL,'2025-02-19 18:07:19'),(50,'In the started IF',NULL,NULL,'2025-02-19 18:07:19'),(51,'In the trigger, trigger_task_update',NULL,NULL,'2025-02-25 10:15:55'),(52,'In the started IF',NULL,NULL,'2025-02-25 10:15:55');
 /*!40000 ALTER TABLE `trigger_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -863,7 +520,7 @@ CREATE TABLE `user_login` (
   `created_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_dtm` datetime DEFAULT NULL,
   PRIMARY KEY (`user_login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -872,7 +529,7 @@ CREATE TABLE `user_login` (
 
 LOCK TABLES `user_login` WRITE;
 /*!40000 ALTER TABLE `user_login` DISABLE KEYS */;
-INSERT INTO `user_login` VALUES (2,'Tom.Langan@Comcast.net','$2b$10$aTTZjgC8ust4MLnPy8NsY.01ExglW/dzyEwKX84RhSJ39I1MZJ.2u','Thomas H Langan','Thomas','Tom.Langan@Comcast.net','2025-02-27 12:07:51',NULL);
+INSERT INTO `user_login` VALUES (1,'Tom.Langan@Comcast.net','$2b$10$bKNmdmCM.WC.wjfmSavLZuzxgVrRLtL3aGlOZFVnAljgcG5g6qN5.','Thomas H Langan','Thomas','Tom.Langan@Comcast.net','2025-02-13 10:02:39',NULL);
 /*!40000 ALTER TABLE `user_login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -885,14 +542,13 @@ DROP TABLE IF EXISTS `web_push_subscription`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `web_push_subscription` (
   `web_push_subscription_id` int NOT NULL AUTO_INCREMENT,
-  `domain` varchar(100) NOT NULL,
   `capability_url` varchar(250) NOT NULL,
   `public_key` varchar(100) NOT NULL,
   `private_key` varchar(100) NOT NULL,
   `subscribed_dtm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `unsubscribed_or_expired_dtm` datetime DEFAULT NULL,
   PRIMARY KEY (`web_push_subscription_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -901,7 +557,7 @@ CREATE TABLE `web_push_subscription` (
 
 LOCK TABLES `web_push_subscription` WRITE;
 /*!40000 ALTER TABLE `web_push_subscription` DISABLE KEYS */;
-INSERT INTO `web_push_subscription` VALUES (6,'https://10.254.254.242:3000','https://fcm.googleapis.com/fcm/send/fjTDXQA31xM:APA91bGhl2huj4ckBGOnGZv4yTwlDLcTQWhuFBw_tRIGorMbQn5UMJW4fbKppMvx8t25yGnbA-7Vq8n_S9VRgDSjKod-GWminEStpAjM9Pexx7CShHyFuZ9COLwfInjH5OeZ8UMTctmE','BFU-MIPr9ckEhBrc4SonfWJYYunWzJgTXgEw2cqI17-7ZpAYR9P8EsqvamEkU9tkFvDNBqNUyBwHPUaMR1cwsj0','g5AeB8fz9XsFPaviMJH6QQ','2025-02-27 12:11:47',NULL);
+INSERT INTO `web_push_subscription` VALUES (4,'https://fcm.googleapis.com/fcm/send/fPyXIz1Sics:APA91bHxUDOTegKvpS5EpbG5-2-zyeKoJtd_GnWoe3s9KnueDeBogrSmPPv6o7XRZy3pCtupbpjUVlcvngnFWEra1f9mY0q6f5RH3n7AkFYf8IDjmuBgufzcnCroIlcb4quneIqS0FqP','BPHuI-JEG2KCvT8xm1nuw1Urz9dNlMrDISWh1hvcuwbniou5iplBXE0aQXtapSFfmN_F2TyjBL8uVNgFVZtVLP4','FuqWYxSp_dn2Hk5sfefAfA','2025-01-04 08:25:37',NULL),(5,'https://fcm.googleapis.com/fcm/send/fTOuK5kqMYw:APA91bGdUq5SmjpzJOjovFXgplJ58lpcHjvt35mHN-O90oI3PnfgN6CLvFTWwa0u23WzGXSrTHdUF_SwFgURmJVQHY1zE2l47QkI0n1-Tw0OZbuRdFNmR0FgInRdpgLhUZkcIX4USZrl','BDtL5ZtxBMjWDtb31sCkdyjA5f2DcY9JF5Mgxv-6h_3a32FHnTN0Fo2dno0Ne6f_xP4BTkE68iLcZm-CCekQMBM','fzbibL2SOjScBAAb07mzJQ','2025-02-19 13:53:38',NULL);
 /*!40000 ALTER TABLE `web_push_subscription` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1144,7 +800,7 @@ BEGIN
 		WHEN "task" THEN
 			call p_add_task(type, data);
 		WHEN "web_push_subscription" THEN
-        	insert into web_push_subscription (capability_url, domain, public_key, private_key) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.endpoint')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.domain')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.p256dh')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.auth')));
+        	insert into web_push_subscription (capability_url, public_key, private_key) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.endpoint')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.p256dh')), JSON_UNQUOTE(JSON_EXTRACT(data, '$.keys.auth')));
 		WHEN "note" THEN
 			call p_add_note(data);
 		WHEN "user_login" THEN
@@ -2018,34 +1674,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `p_create_task_user` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`tlangan`@`%` PROCEDURE `p_create_task_user`()
-BEGIN
-	drop table IF EXISTS task_user;
-
-	create table goal_note (
-		task_id int not null,
-		user_login_id int not null,
-		start_assignment_dtm datetime null,
-		end_assignment_dtm datetime null,
-		created_dtm datetime default current_timestamp not null,
-		PRIMARY KEY (task_id, user_login_id)
-	);
-	END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `p_create_trigger_log` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -2122,7 +1750,6 @@ BEGIN
 
 	create table web_push_subscription (
 		web_push_subscription_id int not null auto_increment,
-        domain varchar(100) not null,
 		capability_url varchar(250) not null,
 		public_key varchar(100) not null,
 		private_key varchar(100) not null,
@@ -2575,7 +2202,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`tlangan`@`%` PROCEDURE `p_migrate_user_login`()
 BEGIN
-    insert into user_login select * from t_user_login;
+    insert into user_login (user_login_id, user_name, hashed_password, full_name, display_name, email_address, created_dtm, deleted_dtm )
+    select user_login_id, user_name, hashed_password, full_name, display_name, null, create_dtm, deleted_dtm from t_user_login;
     END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2594,14 +2222,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`tlangan`@`%` PROCEDURE `p_migrate_web_push_subscription`()
 BEGIN
-    insert into web_push_subscription select web_push_subscription_id,
-        '192.168.1.10:3000',
-		capability_url,
-		public_key,
-		private_key,
-		subscribed_dtm,
-		unsubscribed_or_expired_dtm
- from t_web_push_subscription;
+    insert into web_push_subscription select * from t_web_push_subscription;
     END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2683,4 +2304,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-27 14:02:26
+-- Dump completed on 2025-02-27 11:34:50
