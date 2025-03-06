@@ -23,7 +23,7 @@
 
 ## Issues
 
-- If a port is in use use the following command `in Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
+- If a port is in use use the following command in `Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
   ```
   Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
   ```
@@ -38,7 +38,7 @@
       A[<h2>Browser</h2> <br />  Ask the user if they would like web pushes]-- No -->B[Refresh data by calling the server on every action];
       A-- Yes -->C[Register the Service Worker in the browser <br /> and pass the subscription information to the server <br /> so that it can be stored in the database.]
       C-- Post to the endpoint web_push_subscription <br /> with the body containing the subscription information -->D[<h2>Web Server </h2>];
-      D--Call stored procedure p_add_item <br /> with item_type = `web_push_subscription` <br /> and data = json version of subscription -->E[<h2>Database</h2>]
+      D-- Call stored procedure p_add_item <br /> with item_type =  web_push_subscription <br /> and data = json version of subscription -->E[<h2>Database</h2>]
 ```
 
 ### Web Push Process
@@ -73,7 +73,12 @@
 
   - The first step is to make the changes to the DDL and DML and tests.
     - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
-    - For any new database objects create the appropriate scripts and add them to the `upgrade_and_test/create_test_environment.sh` shell script.
+    - For any new database objects create the appropriate scripts and add them to the appropriate shell scripts.
+      - tables: tables/load_table_creation_sps.sh
+      - foreign keys: foreign_keys/load_foreign_keys_sps.sh
+      - stored procedures: stored_procedures/load_stored_procedures.sh
+      - migration scripts: tables/migration_scripts/load_migration_sps.sh
+      - triggers: triggers/load_triggers.sh
     - If there are any changes to the existing test scripts/objects then make them
     - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
   - The second step is to run the built in tests as follows:
@@ -225,6 +230,7 @@
 
 ## Personal Notes
 
+- "cd -" to toggle between linux directories.
 - I came across [this](https://webaim.org/resources/contrastchecker/) tool to analyze color contrast
 - On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
 - Use the command `arp -a` to view all devices on the local network.

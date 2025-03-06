@@ -6,7 +6,7 @@ BEGIN
 	set @task_id = JSON_EXTRACT(data, '$.task_id');
 	CASE type
 		WHEN "start" THEN
-			update task set started_dtm = current_timestamp where task_id = @task_id;
+			call p_start_task(data);
 		WHEN "pause" THEN
 			-- This logic can not be put in the task update trigger since it is, itself, an update to the same task
             -- This logic esentially acts as a toggle for the paused state.

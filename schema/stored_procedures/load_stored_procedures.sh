@@ -41,3 +41,4 @@
 
 ../scripts/run.sh "tlangan" $1 $2 "../stored_procedures/p_update_item.sql"
 
+../scripts/run.sh "tlangan" $1 $2 "../stored_procedures/p_start_task.sql"

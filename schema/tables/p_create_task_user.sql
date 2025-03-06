@@ -10,7 +10,7 @@ create procedure p_create_task_user()
 	BEGIN
 	drop table IF EXISTS task_user;
 
-	create table goal_note (
+	create table task_user (
 		task_id int not null,
 		user_login_id int not null,
 		start_assignment_dtm datetime null,

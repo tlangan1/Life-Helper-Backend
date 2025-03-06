@@ -99,7 +99,7 @@ create procedure p_task_and_goal_trigger_test_1()
     END IF;
 
 	-- Start Task 1
-	set @JSON = JSON_OBJECT('task_id', @task_1_id);
+	set @JSON = JSON_OBJECT('task_id', @task_1_id, 'user_login_id', 2);
 	PREPARE statement FROM 'call p_update_item("start", ?)';
 	Execute statement using @JSON;
 
