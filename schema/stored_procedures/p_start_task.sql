@@ -18,7 +18,7 @@ BEGIN
 			call p_handle_db_error(@params);
         END;
 	START TRANSACTION;
-	set @task_id = JSON_EXTRACT(data, '$.task_id');
+	set @task_id = JSON_EXTRACT(data, '$.item_id');
     set @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
 
 	update task set started_dtm = current_timestamp where task_id = @task_id;

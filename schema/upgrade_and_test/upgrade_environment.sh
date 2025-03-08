@@ -1,5 +1,10 @@
 # name: upgrade_environment.sh
 #
+# ******************************************
+# The upgrade script is important to retain
+# other settings such as users, grants, etc.
+# ******************************************
+#
 # to execute the script run ./upgrade_environment.sh -UnderAWhiteSky1 life_helper
 # The ./ is important
 # 
