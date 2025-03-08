@@ -1,24 +1,33 @@
-# name: create_production_environment.sh
+# name: create_environment.sh
 #
-# to execute the script run ./create_production_environment.sh -UnderAWhiteSky1 life_helper
+# to execute the script run ./create_environment.sh -UnderAWhiteSky1 test_life_helper copy_from_production
 # The ./ is important
 # 
 # 1st Argument: password
 # 2nd Argument: schema to create
-# 3rd Argument (optional): copy_from_production to populate it with the production schema and data.
+# 3rd Argument: if "copy_from_production" then populate with production data,
+# otherwise create an "empty" schema
 
 # ******************************************
-# create a dump of the current production database
-# including the data.
+# prevent this script from running in the production environment
 # ******************************************
-
-mysqldump -u tlangan -p$1 --routines --triggers life_helper > life_helper.dump.sql
+if [ "$2" = "life_helper" ]; then
+    echo "You are not allowed to run this script in the production environment"
+    exit 1;
+fi
 
 # ******************************************
 # create the database
 # ******************************************
+../scripts/run.sh "tlangan" $1 $2 "../databases/create_$2_db.sql"
 
-mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/create_$2_db.sql
+if [ "$3" = "copy_from_production" ]; then
+    # Extract the schema from the production database
+    mysqldump -u tlangan -p$1 --routines --triggers life_helper > life_helper.dump.sql
+
+    # Load the production schema into the test database
+    mysql -u tlangan -p$1 --comments $2 < life_helper.dump.sql
+fi
 
 # ******************************************
 # load these two helper scripts
@@ -55,7 +64,12 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --file ../databases/creat
 # ******************************************
 # Execute the schema creation script
 # ******************************************
-mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file ../tables/helper_scripts/execute_p_create_table_schema.sql
+
+if [ "$3" = "copy_from_production" ]; then
+    ../scripts/run.sh "tlangan" $1 $2 "../tables/helper_scripts/execute_p_create_table_schema_with_data.sql"
+else
+    ../scripts/run.sh "tlangan" $1 $2 "../tables/helper_scripts/execute_p_create_table_schema_without_data.sql"
+fi
 
 # ******************************************
 # load all triggers for the application

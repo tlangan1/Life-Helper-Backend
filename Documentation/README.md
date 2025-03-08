@@ -11,7 +11,6 @@
   - [Back End](#back-end)
   - [Database](#database)
     - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
-    - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
     - [Test Driven Database Development](#test-driven-database-development)
     - [mysqlsh.exe](#mysqlshexe)
     - [Miscellaneous](#miscellaneous)
@@ -19,13 +18,15 @@
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
+- [Abandoned Stuff](#abandoned-stuff)
+  - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
 - [Personal Notes](#personal-notes)
 
 ## Issues
 
 - If a port is in use use the following command in `Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
   ```
-  Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 3001).OwningProcess
   ```
   Then look up the process id in task manager to find the process. The easiest way to do this is to include pid in the columns and sort by pid.
 
@@ -70,46 +71,38 @@
 #### Database Upgrade Life Cycle
 
 - When the schema needs to change then that change must first be applied to the testing database, test_life_helper, and tested.
-
-  - The first step is to make the changes to the DDL and DML and tests.
-    - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
-    - For any new database objects create the appropriate scripts and add them to the appropriate shell scripts.
-      - tables: tables/load_table_creation_sps.sh
-      - foreign keys: foreign_keys/load_foreign_keys_sps.sh
-      - stored procedures: stored_procedures/load_stored_procedures.sh
-      - migration scripts: tables/migration_scripts/load_migration_sps.sh
-      - triggers: triggers/load_triggers.sh
-    - If there are any changes to the existing test scripts/objects then make them
-    - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
-  - The second step is to run the built in tests as follows:
-    ```
-    cd upgrade_and_test
-    ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests copy_from_production
-    ```
-    - The parameters have the following meaning:
-      - 1st parameter: password
-      - 2nd parameter: test schema
-      - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
-      - 4th parameter: the value `copy_from_production` causes the test environment to be populated with a copy of the production data. Otherwise, the test environment contains no user entered data.
-    - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
-      ```
-      cd upgrade_and_test
-      ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests copy_from_production
-      ```
-    - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
-      ```
-      cd upgrade_and_test
-      ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
-      ```
-  - Finally, point the data server to test_life_helper to see how the application behaves against the new schema.
-
-#### MySQL Workbench Compare Schemas
-
-- The MySQL Workbench Compare Schemas capability can be used to compare databases.
-  - To use the Compare Schemas capability use the menu option Database->Compare Schemas. Note that if this option is not available then open a New Modal using File->New Modal which should make the option available. See text files in the schema/bootstrap directory for the results. This provides a good high-level view.
-  - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
-    - diff_stored_procedures.sql
-    - diff_triggers.sql
+  - The scripts/run.sh script is referenced in many of the shell scripts. It is just a thin wrapper around mysqlsh.exe calls to make the other scripts more readable.
+- The first step is to make the changes to the DDL and DML and tests.
+  - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
+  - For any new database objects write the creation scripts and add them to the appropriate shell scripts.
+    - tables: tables/load_table_creation_sps.sh
+    - foreign keys: foreign_keys/load_foreign_keys_sps.sh
+    - stored procedures: stored_procedures/load_stored_procedures.sh
+    - migration scripts: tables/migration_scripts/load_migration_sps.sh
+    - triggers: triggers/load_triggers.sh
+  - If there are any changes to the existing tests/objects then make them in the load_existing_test_objects.sh script. These are the tests which are executed by the run_existing_tests.sh script.ls -
+  - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
+- The second step is to run the built in tests as follows:
+  ```
+  cd upgrade_and_test
+  ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests copy_from_production
+  ```
+  - The parameters have the following meaning:
+    - 1st parameter: password
+    - 2nd parameter: test schema
+    - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
+    - 4th parameter: the value `copy_from_production` causes the test environment to be populated with a copy of the production data. Otherwise, the test environment contains no user entered data, just data created by the tests, if any.
+  - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
+  ```
+  cd upgrade_and_test
+  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests copy_from_production
+  ```
+  - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
+  ```
+  cd upgrade_and_test
+  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
+  ```
+- Finally, point the data server to test_life_helper to see how the application behaves against the new schema.
 
 #### Test Driven Database Development
 
@@ -210,7 +203,7 @@
 
 ### Configure an environment
 
-- This configuration assumes there is no DNS resolution.
+- This description assumes that DNS resolution is not being used. This is for development purposes only.
 - Launch the Express Server on some machine and note the "Wi Fi" IP address and the port to which it is listening. This is the address to put in GlobalStateProvider.jsx of the front end web server. This tells the front end where the data can be accessed.
 - Launch the front end web server on some machine, perhaps the same machine and note the "Wi Fi" IP address and the port to which it is listening. This is the address to put in the "web_server_url" node in the config.json file on the Express Server. This tells the backend what CORS is allowed.
 - If the router assigns an address to the Express Server which is not covered by one of the existing certificates in the cert subdirectory then you will need to create a new on using mkcert. To do so use the following command:
@@ -227,6 +220,35 @@
 
 - I am considering [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html) AWS cloud based database solution.
 - [Here](https://medium.com/@t.unamka/connecting-to-an-rds-or-aurora-instance-in-a-private-subnet-using-a-jump-box-bastion-host-ba6201464b73) is a link that provides some relevant information concerning the AWS architecture.
+
+## Abandoned Stuff
+
+### MySQL Workbench Compare Schemas
+
+- The MySQL Workbench Compare Schemas capability can be used to compare databases; however, I have found it to be problematic to use.
+- Also associated with this effort were stored procedure and trigger diffing scripts. I do not think this to be necessary moving forward.
+  - To use the Compare Schemas capability use the menu option Database->Compare Schemas. Note that if this option is not available then open a New Modal using File->New Modal which should make the option available. See text files in the schema/bootstrap directory for the results. This provides a good high-level view
+  - The problem with the report that it produces is that the wording in its output is very misleading. The following are two examples. In the following examples the life_helper and test_life_helper databases were compared.
+    - For example, consider this statement. My first thought when reading it is
+      ```
+      Table `life_helper`.`t_task_user` was created
+      ```
+      that the table t_task_user exists in the life_helper database but not in the test_life_helper database. `What it actually means is the opposite!` The table t_task_user exists in the test_life_helper database but not in the life_helper database.
+    - For another example, consider this statement. It turns out that the only
+      ```
+      Table `life_helper`.`goal` was modified
+      ```
+      thing different about the two tables is that the auto-increment for the goal_id, the primary key, has a different value. Here is the output of the diff.
+      ```
+      $ diff life_help_goal.sql test_life_helper_goal.sql
+        11c11
+        < ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        ---
+        > ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+      ```
+  - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
+    - diff_stored_procedures.sql
+    - diff_triggers.sql
 
 ## Personal Notes
 
