@@ -7,3 +7,4 @@
 ######################################################
 # Load the test scripts and tables
 ######################################################
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file tests/p_task_calculate_worked_time_test_1.sql

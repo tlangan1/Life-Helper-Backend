@@ -57,7 +57,7 @@
 
 ## Architecture
 
-- The back end of the application is composed of an ExpressJS web server and a MySQL database server. For local development purposes they run on the same machine. The ExpressJS server provides https routes that the front end running in the browser can use to read from and write data from and to the database.
+- The back end of the application is composed of an ExpressJS web server and a MySQL database server. For local development purposes they run on the same machine. The ExpressJS server provides https routes that the front end running in the browser can use to read from and write data to the database.
 - The front end web server is a SolisJS based web application running on a Vite server.
 
 ### Back End
@@ -70,16 +70,16 @@
 
 #### Database Upgrade Life Cycle
 
-- When the schema needs to change then that change must first be applied to the testing database, test_life_helper, and tested.
-  - The scripts/run.sh script is referenced in many of the shell scripts. It is just a thin wrapper around mysqlsh.exe calls to make the other scripts more readable.
+- When the schema needs to change then that change should first be applied to the testing database, test_life_helper, and tested.
 - The first step is to make the changes to the DDL and DML and tests.
-  - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts.
-  - For any new database objects write the creation scripts and add them to the appropriate shell scripts.
+  - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts. `They do NOT need to be loaded, that is taken care of by the scripts.`
+  - For any new database objects write the creation scripts and add them to the appropriate directories.
     - tables: tables/load_table_creation_sps.sh
     - foreign keys: foreign_keys/load_foreign_keys_sps.sh
     - stored procedures: stored_procedures/load_stored_procedures.sh
     - migration scripts: tables/migration_scripts/load_migration_sps.sh
     - triggers: triggers/load_triggers.sh
+  - If there are any new entities,
   - If there are any changes to the existing tests/objects then make them in the load_existing_test_objects.sh script. These are the tests which are executed by the run_existing_tests.sh script.ls -
   - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
 - The second step is to run the built in tests as follows:
@@ -87,6 +87,7 @@
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests copy_from_production
   ```
+  - The test script calls the database upgrade script which rebuilds the entire schema
   - The parameters have the following meaning:
     - 1st parameter: password
     - 2nd parameter: test schema
@@ -102,7 +103,10 @@
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
   ```
-- Finally, point the data server to test_life_helper to see how the application behaves against the new schema.
+- Finally, point the data server to the test_life_helper database to see how the application behaves against the new schema.
+- Notes:
+  - The upgrade script is a database creation script if the schema passed to it does not already exist.
+  - The scripts/run.sh script is referenced in many of the shell scripts. It is just a thin wrapper around mysqlsh.exe calls to make the other scripts more readable.
 
 #### Test Driven Database Development
 
@@ -165,7 +169,6 @@
 #### Miscellaneous
 
 - `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
-  - I created an analog for the indexes but I do not think it will be used. I did it as an exercise. The stored procedure is called `p_drop_all_non_primary_indexes`
 - `Logging SQL Errors:` There is an entity called sql_error which initially is being used by p_drop_index to persist sql errors.
   - All stored procedures should contain an error handler that captures all exceptions. This is the syntax for that:
     ```
@@ -180,8 +183,7 @@
 
 #### Hierarchical versus web-like item structure
 
-- I have as a goal to enable a web-like structure of connections between goals and objectives as well as between tasks and goals.
-- This is ambitious but I believe it will prove very useful.
+- The relationship between objectives goals and tasks is not strictly hierarchical. A goal may be required by one or more objectives and a task may be required by one or more goals.
 
 ### Root CA Management
 
@@ -205,14 +207,14 @@
 
 - This description assumes that DNS resolution is not being used. This is for development purposes only.
 - Launch the Express Server on some machine and note the "Wi Fi" IP address and the port to which it is listening. This is the address to put in GlobalStateProvider.jsx of the front end web server. This tells the front end where the data can be accessed.
-- Launch the front end web server on some machine, perhaps the same machine and note the "Wi Fi" IP address and the port to which it is listening. This is the address to put in the "web_server_url" node in the config.json file on the Express Server. This tells the backend what CORS is allowed.
+- Launch the front end web server on some machine, perhaps the same machine and note the "Wi Fi" IP address and the port to which it is listening. This is the address to put in the "web_server_url" node in the config.json file on the Express Server. This tells the backend what CORS is allowed from that origin.
 - If the router assigns an address to the Express Server which is not covered by one of the existing certificates in the cert subdirectory then you will need to create a new on using mkcert. To do so use the following command:
   ```
   mkcert [some IP address like 123.456.7891]
   ```
   Now make sure the files have the same name as the IP address, in this case 123.456.7891 and put them in the cert folder.
 - Service worker:
-  - The IP address and port to which the Express server is listening on is provided to the service worker by the client, the web page, when needed. The only purpose the service worker currently has for this information is to log a web push subscription in the database. When the client, the web page, requests the service worker to do this it does so in a message that contains the relevant IP address and port.
+  - The IP address and port to which the Express server is listening on is provided to the service worker by the client, the web page. The only purpose the service worker currently has for this information is to log a web push subscription in the database. When the client, the web page, requests the service worker to do this it does so in a message that contains the relevant IP address and port.
   - The last time I tried to exercise the service worker the "Sites can ask to send notifications" option was deselected and the option "Collapse unwanted requests (recommended)" as selected. This causes any request to send notifications to be immediately blocked. To fix this problem I selected the "Sites can ask to send notifications" option and the "Expand all requests" option. Image shown below.
     ![alt text](image.png)
 

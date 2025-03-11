@@ -23,6 +23,7 @@ BEGIN
 
 	update task set started_dtm = current_timestamp where task_id = @task_id;
 	insert into task_user (task_id, user_login_id, start_assignment_dtm) values (@task_id, @user_login_id, now());
+    insert into work_log (task_id, user_login_id, started_work_dtm) values (@task_id, @user_login_id, now());
     COMMIT;
 END //
 DELIMITER ;

@@ -14,6 +14,8 @@ create procedure p_add_all_foreign_keys()
     call p_add_objective_note_to_objective_fk();
     call p_add_task_note_to_note_fk();
     call p_add_task_note_to_task_fk();
+    call p_add_work_log_to_user_login_fk();
+    call p_add_work_log_to_task_fk();
     END //
     
 DELIMITER ;
