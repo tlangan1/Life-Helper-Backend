@@ -99,8 +99,8 @@ create procedure p_task_and_goal_trigger_test_1()
     END IF;
 
 	-- Start Task 1
-	set @JSON = JSON_OBJECT('task_id', @task_1_id, 'user_login_id', 2);
-	PREPARE statement FROM 'call p_update_item("start", ?)';
+	set @JSON = JSON_OBJECT('update_type', 'start', 'item_id', @task_1_id, 'user_login_id', 2);
+	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
 	-- Make sure the final condition of the right items being started is true
@@ -111,18 +111,19 @@ create procedure p_task_and_goal_trigger_test_1()
 	Select started_dtm into @goal_2_started from goal where goal_id = @goal_2_id;
 	Select started_dtm into @task_1_started from task where task_id = @task_1_id;
 	Select started_dtm into @task_2_started from task where task_id = @task_2_id;
+
 	IF @objective_1_started Is Null and @objective_2_started Is Not Null and @objective_3_started Is Not Null THEN
 		IF @goal_1_started Is Not Null and @goal_2_started Is Null THEN
 			IF @task_1_started Is Not Null and @task_2_started Is Null THEN
 				insert into test_results (test_results_line) values ("SUCCESS: Final Assertion Correct");
 			ELSE
-				insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+				insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
 			END IF;
 		ELSE
-			insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+			insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
         END IF;
 	ELSE
-		insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+		insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
     END IF;
 END //
 

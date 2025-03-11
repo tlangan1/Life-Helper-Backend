@@ -10,30 +10,8 @@
 # Load all migration scripts
 # ******************************************
 
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_goal.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_goal_note.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_goal_task.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_note.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_objective.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_objective_goal.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_objective_note.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_sql_error.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_task.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_task_note.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_trigger_log.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_user_login.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_web_push_subscription.sql"
-
-../scripts/run.sh "tlangan" $1 $2 "../tables/migration_scripts/p_migrate_task_user.sql"
+search_dir=../tables/migration_scripts/
+for entry in "$search_dir"*.sql
+do
+    ../scripts/run.sh "tlangan" $1 $2 "$entry"
+done

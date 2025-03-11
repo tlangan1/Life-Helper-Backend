@@ -90,13 +90,13 @@ create procedure p_task_and_goal_trigger_test_2()
 	Execute statement using @JSON;
 
 	-- Start Task 2
-	set @JSON = JSON_OBJECT('task_id', @task_2_id, 'user_login_id', 2);
-	PREPARE statement FROM 'call p_update_item("start", ?)';
+	set @JSON = JSON_OBJECT('update_type', 'start', 'item_id', @task_2_id, 'user_login_id', 2);
+	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
 	-- Complete Task 2
-	set @JSON = JSON_OBJECT('task_id', @task_2_id);
-	PREPARE statement FROM 'call p_update_item("complete", ?)';
+	set @JSON = JSON_OBJECT('update_type', 'complete', 'item_id', @task_2_id);
+	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
 	-- Make sure the initial condition of everything is un-completed except for goal 2 is true
@@ -123,13 +123,13 @@ create procedure p_task_and_goal_trigger_test_2()
    END IF;
 
 	-- Start Task 1
-	set @JSON = JSON_OBJECT('task_id', @task_1_id, 'user_login_id', 2);
-	PREPARE statement FROM 'call p_update_item("start", ?)';
+	set @JSON = JSON_OBJECT('update_type', 'start', 'item_id', @task_1_id, 'user_login_id', 2);
+	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
 	-- Complete Task 1
-	set @JSON = JSON_OBJECT('task_id', @task_1_id);
-	PREPARE statement FROM 'call p_update_item("complete", ?)';
+	set @JSON = JSON_OBJECT('update_type', 'complete', 'item_id', @task_1_id);
+	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
 	-- Make sure the final condition of the right items being started is true
@@ -145,15 +145,15 @@ create procedure p_task_and_goal_trigger_test_2()
 	IF @objective_1_completed Is Null and @objective_2_completed Is Null and @objective_3_completed Is Not Null THEN
 		IF @goal_1_completed Is Not Null and @goal_2_completed Is Not Null and @goal_3_completed Is Null THEN
 			IF @task_1_completed Is Not Null and @task_2_completed Is Not Null and @task_3_completed Is Null THEN
-				insert into test_results (test_results_line) values ("SUCCESS: Initial Assertion Correct");
+				insert into test_results (test_results_line) values ("SUCCESS: Final Assertion Correct");
 			ELSE
-				insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+				insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
 			END IF;
 		ELSE
-            insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+            insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
         END IF;
 	ELSE
-        insert into test_results (test_results_line) values ("FAILURE: Initial Assertion Incorrect");
+        insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");
     END IF;
 
 	DEALLOCATE PREPARE statement;

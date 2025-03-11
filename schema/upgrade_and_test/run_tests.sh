@@ -7,7 +7,8 @@
 # 3rd Argument: Pass a flag that indicates whether to load the changes or not before running the tests
 # 4th Argument : copy_from_production to populate it with the production schema and data otherwise just leave it empty.
 
-./create_test_environment.sh $1 $4
+# ./upgrade_development.sh $1
+../bootstrap/create_environment.sh $1 $2 $4
 
 ./load_existing_test_objects.sh $1 $2
 

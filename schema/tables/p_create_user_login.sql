@@ -8,7 +8,7 @@ CREATE PROCEDURE p_create_user_login()
     
 	create table user_login (
 		user_login_id int not null auto_increment,
-		user_name varchar(30) not null,
+		user_name varchar(100) not null,
         hashed_password varchar(100) not null,
 		full_name varchar(100) not null,
 		display_name varchar(30) not null,

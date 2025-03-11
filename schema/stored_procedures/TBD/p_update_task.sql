@@ -1,7 +1,7 @@
-DROP PROCEDURE IF exists p_update_item;
+DROP PROCEDURE IF exists p_start_task;
 
 DELIMITER //
-CREATE PROCEDURE p_update_item(IN item_type varchar(30), IN data JSON)
+CREATE PROCEDURE p_start_task(IN data JSON)
 BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN
@@ -14,23 +14,16 @@ BEGIN
             -- Always make sure the rollback proceeds the error logging.
             -- Otherwise, the error logging will also be rolled back.
             SET @error_information = JSON_OBJECT('error_number', @errno, 'sql_state', @sqlstate, 'error_text', @text);
-			SET @params = JSON_OBJECT('sp_name', 'p_update_item', 'error_information', @error_information, 'additional_information', data);
+			SET @params = JSON_OBJECT('sp_name', 'p_start_task', 'error_information', @error_information, 'additional_information', data);
 			call p_handle_db_error(@params);
         END;
 	START TRANSACTION;
+	set @task_id = JSON_EXTRACT(data, '$.item_id');
+    set @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
 
-	CASE item_type
-		WHEN "objective" THEN
-            call p_update_objective(data);
-		WHEN "goal" THEN
-			call p_update_goal(data);
-		WHEN "task" THEN
-			call p_update_task(data);
--- 		WHEN "web_push_subscription" THEN
--- 		WHEN "note" THEN
--- 		WHEN "user_login" THEN
-	END CASE;
-    
+	update task set started_dtm = current_timestamp where task_id = @task_id;
+	insert into task_user (task_id, user_login_id, start_assignment_dtm) values (@task_id, @user_login_id, now());
+    insert into work_log (task_id, user_login_id, started_work_dtm) values (@task_id, @user_login_id, now());
     COMMIT;
 END //
 DELIMITER ;
