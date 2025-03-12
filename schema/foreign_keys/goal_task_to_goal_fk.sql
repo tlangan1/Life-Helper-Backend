@@ -1,0 +1,1 @@
+alter table goal_task add constraint fk_goal_task_to_goal foreign key fk_goal_task_to_goal (goal_id) references goal(goal_id);

@@ -1,0 +1,1 @@
+alter table objective_note add constraint fk_objective_note_to_note foreign key fk_objective_note_to_note (note_id) references note(note_id);

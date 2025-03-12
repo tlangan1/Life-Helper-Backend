@@ -1,0 +1,1 @@
+alter table work_log add constraint fk_work_log_to_task foreign key fk_work_log_to_task (task_id) references task(task_id);

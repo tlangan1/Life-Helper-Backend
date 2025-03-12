@@ -16,7 +16,3 @@ do
     ../scripts/run.sh "tlangan" $1 $2 "$entry"
 done
 
-# ../scripts/run.sh "tlangan" $1 $2 "../triggers/trigger_goal_update.sql"
-
-# ../scripts/run.sh "tlangan" $1 $2 "../triggers/trigger_task_update.sql"
-
