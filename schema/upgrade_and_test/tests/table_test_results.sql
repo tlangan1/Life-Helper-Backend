@@ -1,5 +1,3 @@
-use test_life_helper;
-
 drop table IF EXISTS test_results;
 
 create table test_results (

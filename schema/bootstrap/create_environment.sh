@@ -23,7 +23,7 @@ fi
 # ******************************************
 # create the database
 # ******************************************
-../scripts/run.sh "tlangan" $1 $2 "../databases/create_$2_db.sql"
+../scripts/run.sh "tlangan" $1 test_life_helper "create database if not exists $2"
 
 if [ "$3" = "copy_from_production" ]; then
     # Extract the schema from the production database

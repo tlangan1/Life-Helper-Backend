@@ -5,10 +5,10 @@ CREATE PROCEDURE p_update_task(IN data JSON)
 BEGIN
 	Set @update_type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.update_type'));
 	set @task_id = JSON_EXTRACT(data, '$.item_id');
+	set @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
 
 	CASE @update_type
 		WHEN "start" THEN
-			set @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
 
 			update task set started_dtm = current_timestamp where task_id = @task_id;
 			insert into task_user (task_id, user_login_id, start_assignment_dtm) values (@task_id, @user_login_id, now());

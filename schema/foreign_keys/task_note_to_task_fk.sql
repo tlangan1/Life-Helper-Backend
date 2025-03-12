@@ -1,0 +1,1 @@
+alter table task_note add constraint fk_task_note_to_task foreign key fk_task_note_to_task (task_id) references task(task_id);

@@ -1,0 +1,1 @@
+alter table work_log add constraint fk_work_log_to_user_login foreign key fk_work_log_to_user_login (user_login_id) references user_login(user_login_id);

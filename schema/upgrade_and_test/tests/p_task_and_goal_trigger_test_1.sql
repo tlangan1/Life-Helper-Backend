@@ -1,5 +1,3 @@
-use test_life_helper;
-
 -- One potential flaw of this logic might be exposed if there is
 -- an objective or goal imported from production with the same
 -- names as one of the objectives and/or goals created below.

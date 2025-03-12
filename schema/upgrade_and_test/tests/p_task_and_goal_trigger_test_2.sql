@@ -1,5 +1,3 @@
-use test_life_helper;
-
 -- One potential flaw of this logic might be exposed if there is
 -- already an objective or goal with any of the
 -- names in the objectives and goals created below.
