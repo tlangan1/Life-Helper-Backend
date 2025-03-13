@@ -1,38 +1,32 @@
-# name: upgrade_environment.sh
+# name: upgrade_or_create_environment.sh
 #
-# ******************************************
-# The upgrade script is important to retain
-# other settings such as users, grants, etc.
-# ******************************************
-#
-# to execute the script run ./upgrade_environment.sh -UnderAWhiteSky1 life_helper
-# The ./ is important
+# Use: ./upgrade_or_create_environment.sh <password> <schema>
+# Example: ./upgrade_or_create_environment.sh -UnderAWhiteSky1 test_life_helper
 # 
 # 1st Argument: password
 # 2nd Argument: schema to upgrade
 
 echo "******************************************"
-echo "starting upgrade_environment.sh"
+echo "starting upgrade_or_create_environment.sh"
 echo "******************************************"
 
 # ******************************************
-# Create a copy of the selected database
+# Backup the selected database
 # ******************************************
-mysqldump -u tlangan -p$1 --routines --triggers $2 > $2.dump.sql
+
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+mysqldump -u tlangan -p$1 --routines --triggers $2 > "dumps/$2.dump $timestamp.sql"
+mysqldump -u tlangan -p$1 --routines --triggers "life_helper" > "dumps/life_helper.dump $timestamp.sql"
 
 if [ "$2" != "life_helper" ]; then
-    # ******************************************
-    # Re-create the selected database
-    # ******************************************
-
-    ../scripts/run.sh "tlangan" $1 $2 "create database if not exists $2"
-
+    ../scripts/run.sh "tlangan" $1 "life_helper" "drop database $2;"
+    ../scripts/run.sh "tlangan" $1 "life_helper" "create database $2;"
     # ******************************************
     # Load the schema from the copy
     # ******************************************
-
-    mysql -u tlangan -p$1 --comments $2 < $2.dump.sql
+    mysql -u tlangan -p$1 --comments $2 < "dumps/life_helper.dump $timestamp.sql"
 fi
+
 # ******************************************
 # load these two helper scripts
 # ******************************************
@@ -76,9 +70,10 @@ echo "******************************************"
 # ******************************************
 
 echo "******************************************"
-echo " creating the table schema"
+echo " creating the table schema and the drop foreign keys sps"
 echo "******************************************"
 
+../scripts/run.sh "tlangan" $1 $2 "../foreign_keys/p_drop_all_foreign_keys.sql"
 ../scripts/run.sh "tlangan" $1 $2 "../tables/helper_scripts/execute_p_create_table_schema_with_data.sql"
 
 # ******************************************

@@ -1,6 +1,6 @@
 # name: load_table_creation_sps.sh
 #
-# to execute the script run ./load_table_creation_sps.sh -UnderAWhiteSky1 [some database name]
+# to execute the script run ./load_table_creation_sps.sh -UnderAWhiteSky1 <database>
 # The ./ is important
 # 
 # 1st Parameter: password
@@ -9,7 +9,6 @@
 # ******************************************
 # load the table creation stored procedures
 # ******************************************
-
 search_dir=../tables/
 for entry in "$search_dir"*.sql
 do
