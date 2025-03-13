@@ -85,18 +85,17 @@
 - The second step is to run the built in tests as follows:
   ```
   cd upgrade_and_test
-  ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests copy_from_production
+  ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests
   ```
   - The test script calls the database upgrade script which rebuilds the entire schema
   - The parameters have the following meaning:
     - 1st parameter: password
     - 2nd parameter: test schema
     - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
-    - 4th parameter: the value `copy_from_production` causes the test environment to be populated with a copy of the production data. Otherwise, the test environment contains no user entered data, just data created by the tests, if any.
   - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
   ```
   cd upgrade_and_test
-  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests copy_from_production
+  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
   ```
   - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
   ```

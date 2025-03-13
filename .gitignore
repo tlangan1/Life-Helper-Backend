@@ -1,2 +1,2 @@
 root CA certificates
-**/*.dump.sql
+**/*.dump*.sql
