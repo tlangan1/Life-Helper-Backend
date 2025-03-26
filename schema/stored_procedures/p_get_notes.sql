@@ -6,7 +6,7 @@ BEGIN
 	Set @type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.item_type'));
     Set @item_id = JSON_EXTRACT(data, '$.item_id');
 
-	SET @SQL = CONCAT('select n.note from ', @type);
+	SET @SQL = CONCAT('select n.note_id, n.note from ', @type);
     SET @SQL = CONCAT(@SQL, ' x inner join ', @type);
     SET @SQL = CONCAT(@SQL, '_note xn on x.', @type);
     SET @SQL = CONCAT(@SQL, '_id = xn.', @type, '_id');
