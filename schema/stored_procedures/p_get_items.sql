@@ -33,7 +33,10 @@ BEGIN
 			call p_get_notes(data);
 		WHEN "user_login" THEN
 			call p_get_user_login(data);
-	END CASE;
+		WHEN "stacked_tasks" THEN
+			select * from stacked_tasks where user_login_id = JSON_EXTRACT(data, '$.user_login_id')
+			order by order_id;
+END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		create temporary table t2 as select * from t1
 		WHERE CASE

@@ -21,17 +21,18 @@ ON task FOR EACH ROW
     -- Since task_id never changes once a task is created then OLD.task_id = NEW.task_id
 
     IF OLD.started_dtm is null AND NEW.started_dtm is not null THEN
-		-- This logic enforces the integrity of the data. It ensures
-        -- that if a goal relies on one or more tasks and at least one
-        -- of them has been started then the goal should be in the 
-        -- started state. The logic is enforced as follows:
+		-- This logic enforces the integrity of the data.
+        -- 
+        -- It ensures that if a goal relies on one or more tasks
+        -- and at least one of them has been started then the goal should
+        -- be in the started state. The logic is enforced as follows:
 		-- A task has been started. If there are any goals for which 
         -- this is the first of their tasks to be started then
         -- the goal should be marked as started.
         -- Analogous logic is applied to the relationship between
         -- objectives and goals in the goal update trigger.
 
-		Insert into trigger_log (statement) select "In the started IF";
+		-- Insert into trigger_log (statement) select "In the started IF";
         
 		Create temporary table trigger_task_update_temp select g.goal_id from goal_task gt
         inner join goal g on gt.goal_id = g.goal_id
@@ -43,17 +44,18 @@ ON task FOR EACH ROW
 		drop temporary table if exists trigger_task_update_temp;
     END IF;
     IF OLD.completed_dtm is null AND NEW.completed_dtm is not null THEN
-		-- This logic enforces the integrity of the data. It ensures
-        -- that if a goal relies on one or more tasks and all of them
-        -- have been completed then the goal should be in the completed
-        -- state. The logic is enforced as follows:
+		-- This logic enforces the integrity of the data.
+        -- 
+        -- It ensures that if a goal relies on one or more tasks and
+        -- all of them have been completed then the goal should be in 
+        -- the completed state. The logic is enforced as follows:
 		-- A task has been completed. If there are no other open tasks
         -- associated with any of the goals it applies to then each of
         -- those goals should be completed.
         -- Analogous logic is applied to the relationship between
         -- objectives and goals in the goal update trigger.
         
-		Insert into trigger_log (statement) select "In the completed IF";
+		-- Insert into trigger_log (statement) select "In the completed IF";
 
 		-- open the cursor
 		OPEN cur_goals;

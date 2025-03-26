@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Notes](#notes)
 - [Issues](#issues)
 - [Diagrams](#diagrams)
   - [Web Push Subscription Process](#web-push-subscription-process)
@@ -10,17 +11,28 @@
 - [Architecture](#architecture)
   - [Back End](#back-end)
   - [Database](#database)
+  - [Tables](#tables)
+  - [Complete ERD](#complete-erd)
+  - [Users work tasks](#users-work-tasks)
+  - [Users make notes](#users-make-notes)
     - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
     - [Test Driven Database Development](#test-driven-database-development)
     - [mysqlsh.exe](#mysqlshexe)
     - [Miscellaneous](#miscellaneous)
     - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
+  - [Front End](#front-end)
+    - [Current Application Behavior](#current-application-behavior)
+    - [Potential Future Application Behavior](#potential-future-application-behavior)
+    - [Registration \& Login](#registration--login)
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
 - [Abandoned Stuff](#abandoned-stuff)
   - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
-- [Personal Notes](#personal-notes)
+
+## Notes
+
+- The expiration date on web push subscriptions is determined by the subscription service.
 
 ## Issues
 
@@ -68,19 +80,65 @@
 
 ### Database
 
+### Tables
+
+Core: goal, goal_task, objective, objective_goal, task,
+
+Work/User: task_user, user_login, work_log
+
+Notes: note, goal_note, objective_note, task_note
+
+Web Push: web_push_subscription
+
+Diagnostic: sql_error, trigger_log
+
+### Complete ERD
+
+```mermaid
+erDiagram
+  objective ||--o{ objective_goal : "objectives contain goals"
+  objective_goal }|--|| goal : "goals support objectives"
+  goal ||--o{ goal_task : "goals contain tasks"
+  goal_task }|--|| task : "tasks support goals"
+```
+
+### Users work tasks
+
+- Here is a diagram of the relationship between users and tasks.
+
+  ```mermaid
+  erDiagram
+    user_login ||--o{ task_user : "starts a task"
+    task ||--o{ task_user : "typically this is one to one...see notes below"
+    task_user ||--|{ work_log: "user works a task"
+  ```
+
+  - If a user is unable to complete a given task and it needs to get reassigned to another user then there would be two rows in task_user associated with that task.
+  - A task can be reassigned only if it is in the started or paused state.
+    - If a task is in the `paused state` then it can simply be reassigned.
+    - If a task is in the `started state` then the reassignment logic should first pause it before reassigning it. In this way the time tracking logic can calculate the worked time for the original user assigned to the task.
+
+### Users make notes
+
+- Here is a diagram of the relationship between objectives, goals, tasks and notes.
+
+  ```mermaid
+  erDiagram
+    objective ||--o{ objective_note : ""
+    note ||--}| objective_note : "notes on an objective"
+    goal ||--o{ goal_note : ""
+    note ||--}| goal_note : "notes on a goal"
+    task ||--o{ task_note : ""
+    note |o--}| task_note : "notes on a task"
+  ```
+
 #### Database Upgrade Life Cycle
 
 - When the schema needs to change then that change should first be applied to the testing database, test_life_helper, and tested.
 - The first step is to make the changes to the DDL and DML and tests.
-  - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts. `They do NOT need to be loaded, that is taken care of by the scripts.`
-  - For any new database objects write the creation scripts and add them to the appropriate directories.
-    - tables: tables/load_table_creation_sps.sh
-    - foreign keys: foreign_keys/load_foreign_keys_sps.sh
-    - stored procedures: stored_procedures/load_stored_procedures.sh
-    - migration scripts: tables/migration_scripts/load_migration_sps.sh
-    - triggers: triggers/load_triggers.sh
-  - If there are any new entities,
-  - If there are any changes to the existing tests/objects then make them in the load_existing_test_objects.sh script. These are the tests which are executed by the run_existing_tests.sh script.ls -
+  - For any database objects such as tables, stored procedures, triggers, foreign keys, etcetera that need to change, update the appropriate scripts. `They do NOT need to be loaded, that is taken care of by the scripts.
+  - For any new database objects write the creation scripts and put them in the appropriate directories.
+  - If there are any changes to the existing tests/objects then make them in the load_existing_test_objects.sh script. These are the tests which are executed by the run_existing_tests.sh script.
   - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
 - The second step is to run the built in tests as follows:
   ```
@@ -184,6 +242,60 @@
 
 - The relationship between objectives goals and tasks is not strictly hierarchical. A goal may be required by one or more objectives and a task may be required by one or more goals.
 
+### Front End
+
+#### Current Application Behavior
+
+- a task is `active` if it is started but not completed.
+- a task is `inactive` if it is not `active, completed or aborted`.`
+- A task can be deleted at any time before it is completed.
+
+```mermaid
+  flowchart LR
+      inactive-- "start" -->active
+      active-- "deleted/canceled" -->aborted
+      active-- "completed" -->completed
+```
+
+- An active task can be `paused` and `resumed`.
+
+```mermaid
+  flowchart LR
+      running-- "paused" --> paused
+      paused-- "resumed" --> running
+
+```
+
+#### Potential Future Application Behavior
+
+- A task can be un-started, un-aborted or un-completed but only with an explanation.
+
+```mermaid
+  flowchart LR
+      inactive<-. "start or un-started with explanation" .->active
+      active<-. "aborted or un-aborted with explanation" .->aborted
+      active<-. "completed or un-completed with explanation" .->completed
+```
+
+#### Registration & Login
+
+- This section is accurate as of 3/22/2025
+- Registration process
+  - Conventional user name/password:
+    - Some rules concerning required data and its format are enforced. Read the code for the details.
+    - The `add/user_login` route is used to post the new user's data.
+  - Federated: not yet implemented
+  - Passkey: not yet implemented
+- Login Process
+  - Conventional user name/password:
+    - A login can occur in the Login form.
+    - A login can occur via a auto-login prompt. The auto-login is implemented with the option set that requires the user to interact, it is not done silently although it could be if the user has only one set of credentials for the Life Helper web site stored in the credentials manager.
+    - In either case, the login function is used to implement the process.
+    - The `check/user_login` route is used to post data to initiate the login request.
+      - This process is implemented in such a way as to minimize the exposure of the password. To accomplish this the data server requests the user data from the database. The most relevant piece of data for the login process is the hashed password. The actual password is never sent to the database to isolate it from being captured in a logging event, etcetera. The bcrypt library then uses the actual password and the hashed password to determine if the actual password is correct and respond accordingly.
+  - Federated: not yet implemented
+  - Passkey: not yet implemented
+
 ### Root CA Management
 
 - I created a root CA certificates for both the windows machine and the linux machine using `mkcert` using the following command:
@@ -250,44 +362,3 @@
   - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
     - diff_stored_procedures.sql
     - diff_triggers.sql
-
-## Personal Notes
-
-- "cd -" to toggle between linux directories.
-- I came across [this](https://webaim.org/resources/contrastchecker/) tool to analyze color contrast
-- On the windows machine the 2 Virtual Ethernet Adapter IP addresses are used by the operating system to allow network access for the VMs. The "Wi Fi" address is the one that the application will use.
-- Use the command `arp -a` to view all devices on the local network.
-- Regex find and replace in VSCode
-  - I used the find pattern `[0-9]+\.` in conjunction with the replace pattern `- [ ]` to replace this
-    ````
-    1. lorem ipsum
-    2. Tom Langan
-    3. Another list item
-    ```
-    with this
-    ```
-    - [ ] lorem ipsum
-    - [ ] Tom Langan
-    - [ ] Another list item
-    ```
-    ````
-  - I used the find pattern `<a href=.+?>(\w\*)</a>` in conjunction with the replace pattern `$1` to replace this
-    ```
-    <li><a href="index.php">Home</a></li>
-    <li><a href="about.php">About</a></li>
-    <li><a href="contact.php">Contact</a></li>
-    ```
-    with this
-    ```
-    <li>Home</li>
-    <li>About</li>
-    <li>Contact</li>
-    ```
-- The expiration date on web push subscriptions is determined by the subscription service.
-- [This](https://curlconverter.com/javascript/) is a great resource to convert curl commands to fetch API in JavaScript.
-- The [W3C Markup Validator](https://validator.w3.org/#validate_by_input) is a very useful tool.
-- [This](https://www.dell.com/community/en/conversations/xps/xps-15-7590-no-number-lock-key-for-special-characters/647f880af4ccf8a8de758f81) resource provides some guidance on using the hidden keyboard on my laptop
-- I downloaded [MySQL Shell for VS Code](https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code). See [these](https://dev.mysql.com/doc/mysql-shell-gui/en/) instructions for the use of this tool.
-  - This extension immediately complained about the version of the Microsoft C and C++ (MSVC) runtime library that was installed so I downloaded the latest version from [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) and installed it. This is the version that was installed `Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.42.34433`. Note, the installer is in the downloads directory and it is called `VC_redist.x64.exe`.
-  - Next the extension complained about a web certificate not being installed. This certificate is what allows https connections to the database from this tool. It is a root certificate authority installed locally (just like the one I created for Life Helper) to validate the access. According to the documentation is is stored here, %appdata%\MySQL\mysqlsh-gui\plugin_data\gui_plugin\web_certs\rootCA.crt which, in my case, maps to `C:\Users\tomla\AppData\Roaming\MySQL\mysqlsh-gui\plugin_data\gui_plugin\web_certs` and there are two certificates there, rootCA.crt and server.crt.
-  - I am going to use MySQL workbench for now so I am going to disable this extension.S
