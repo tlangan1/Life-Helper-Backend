@@ -15,11 +15,13 @@
   - [Complete ERD](#complete-erd)
   - [Users work tasks](#users-work-tasks)
   - [Users make notes](#users-make-notes)
-    - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
-    - [Test Driven Database Development](#test-driven-database-development)
-    - [mysqlsh.exe](#mysqlshexe)
-    - [Miscellaneous](#miscellaneous)
-    - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
+  - [Database Upgrade Life Cycle](#database-upgrade-life-cycle)
+    - [Development Environment](#development-environment)
+    - [Production Environment](#production-environment)
+  - [Test Driven Database Development](#test-driven-database-development)
+  - [mysqlsh.exe](#mysqlshexe)
+  - [Miscellaneous](#miscellaneous)
+  - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
   - [Front End](#front-end)
     - [Current Application Behavior](#current-application-behavior)
     - [Potential Future Application Behavior](#potential-future-application-behavior)
@@ -132,7 +134,9 @@ erDiagram
     note |o--}| task_note : "notes on a task"
   ```
 
-#### Database Upgrade Life Cycle
+### Database Upgrade Life Cycle
+
+#### Development Environment
 
 - When the schema needs to change then that change should first be applied to the testing database, test_life_helper, and tested.
 - The first step is to make the changes to the DDL and DML and tests.
@@ -142,6 +146,7 @@ erDiagram
   - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
 - The second step is to run the built in tests as follows:
   ```
+  cd schema
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests
   ```
@@ -162,10 +167,18 @@ erDiagram
   ```
 - Finally, point the data server to the test_life_helper database to see how the application behaves against the new schema.
 - Notes:
-  - The upgrade script is a database creation script if the schema passed to it does not already exist.
+
+  - The upgrade script is a database creation script if the schema passed to it is not production, that is, `life_helper`.
   - The scripts/run.sh script is referenced in many of the shell scripts. It is just a thin wrapper around mysqlsh.exe calls to make the other scripts more readable.
 
-#### Test Driven Database Development
+#### Production Environment
+
+- When satisfied with the behavior of the application upgrade the production environment with the following script.
+  ```
+  ./upgrade_or_create_environment.sh -UnderAWhiteSky1 test_life_helper
+  ```
+
+### Test Driven Database Development
 
 - As of 1/16/2025 here are the list of available tests:
   - `p_task_and_goal_trigger_test_1`
@@ -214,7 +227,7 @@ erDiagram
     - `expect` goal 1 and objective 3 to be completed.
     - `expect` objective 1, objective 2 and goal 3 to remain un-completed.
 
-#### mysqlsh.exe
+### mysqlsh.exe
 
 - Use the following syntax to use mysqlsh from the command line
   - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
@@ -223,7 +236,7 @@ erDiagram
   - To check the status of the connection enter `shell.status()`
   - To exit from the session enter `\quit`
 
-#### Miscellaneous
+### Miscellaneous
 
 - `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
 - `Logging SQL Errors:` There is an entity called sql_error which initially is being used by p_drop_index to persist sql errors.
@@ -238,7 +251,7 @@ erDiagram
     ```
     This design should ensure that no database errors are returned to the application.
 
-#### Hierarchical versus web-like item structure
+### Hierarchical versus web-like item structure
 
 - The relationship between objectives goals and tasks is not strictly hierarchical. A goal may be required by one or more objectives and a task may be required by one or more goals.
 

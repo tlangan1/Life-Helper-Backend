@@ -3,6 +3,8 @@ DROP PROCEDURE IF exists p_get_items;
 DELIMITER //
 CREATE PROCEDURE p_get_items(IN type varchar(30), IN data JSON)
 BEGIN
+	set @sort = JSON_UNQUOTE(JSON_EXTRACT(data, '$.sort'));
+	set @order = JSON_UNQUOTE(JSON_EXTRACT(data, '$.order'));
 	drop temporary table if exists t1;
 	drop temporary table if exists t2;
 	CASE type
@@ -20,7 +22,8 @@ BEGIN
 				create temporary table t1 as select t.task_id as item_id, t.*
 				from task t inner join task_user tu on t.task_id = tu.task_id
 				where tu.user_login_id = JSON_EXTRACT(data, '$.assigned_to')
-                and tu.end_assignment_dtm Is Null;
+                and tu.end_assignment_dtm Is Null
+                order by tu.order_id;
             ELSE
 				create temporary table t1 as select t.task_id as item_id, t.*
 				from task t inner join goal_task gt on t.task_id = gt.task_id
@@ -33,10 +36,7 @@ BEGIN
 			call p_get_notes(data);
 		WHEN "user_login" THEN
 			call p_get_user_login(data);
-		WHEN "stacked_tasks" THEN
-			select * from stacked_tasks where user_login_id = JSON_EXTRACT(data, '$.user_login_id')
-			order by order_id;
-END CASE;
+	END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		create temporary table t2 as select * from t1
 		WHERE CASE
@@ -54,35 +54,35 @@ END CASE;
 			WHEN JSON_EXTRACT(data, '$.deleted_items') = "no" THEN deleted_dtm Is Null
 			ELSE 1 = 1
 		END;
-		Set @assigned_to = JSON_EXTRACT(data, '$.assigned_to');
-		IF @assigned_to Is Null THEN
+-- 		Set @assigned_to = JSON_EXTRACT(data, '$.assigned_to');
+-- 		IF @assigned_to Is Null THEN
 			select * from t2
 			order by item_name asc;
-		ELSE
-			CASE type
-				WHEN "objectives" THEN
-					select * from t2
-					where objective_id in (select o.objective_id from objective o inner join objective_goal og on t2.objective_id = og.objective_id
-					inner join goal g on og.goal_id = g.goal_id
-					inner join goal_task gt on gt.goal_id = g.goal_id
-					inner join task t on t.task_id = gt.task_id
-					inner join task_user tu on t.task_id = tu.task_id
-					where tu.user_login_id = @assigned_to)
-					order by item_name asc;
-				WHEN "goals" THEN
-					select * from t2
-					where goal_id in (select g.goal_id from goal g inner join goal_task gt on t2.goal_id = gt.goal_id
-					inner join task t on t.task_id = gt.task_id
-					inner join task_user tu on t.task_id = tu.task_id
-					where tu.user_login_id = @assigned_to)
-					order by item_name asc;
-				WHEN "tasks" THEN
-					select * from t2
-					where task_id in (select t.task_id from task t inner join task_user tu on t2.task_id = tu.task_id
-					where tu.user_login_id = @assigned_to)
-					order by item_name asc;
-			END CASE;
-		END IF;
+-- 		ELSE
+-- 			CASE type
+-- 				WHEN "objectives" THEN
+-- 					select * from t2
+-- 					where objective_id in (select o.objective_id from objective o inner join objective_goal og on t2.objective_id = og.objective_id
+-- 					inner join goal g on og.goal_id = g.goal_id
+-- 					inner join goal_task gt on gt.goal_id = g.goal_id
+-- 					inner join task t on t.task_id = gt.task_id
+-- 					inner join task_user tu on t.task_id = tu.task_id
+-- 					where tu.user_login_id = @assigned_to)
+-- 					order by item_name asc;
+-- 				WHEN "goals" THEN
+-- 					select * from t2
+-- 					where goal_id in (select g.goal_id from goal g inner join goal_task gt on t2.goal_id = gt.goal_id
+-- 					inner join task t on t.task_id = gt.task_id
+-- 					inner join task_user tu on t.task_id = tu.task_id
+-- 					where tu.user_login_id = @assigned_to)
+-- 					order by item_name asc;
+-- 				WHEN "tasks" THEN
+-- 					select * from t2
+-- 					where task_id in (select t.task_id from task t inner join task_user tu on t2.task_id = tu.task_id
+-- 					where tu.user_login_id = @assigned_to)
+-- 					order by item_name asc;
+-- 			END CASE;
+-- 		END IF;
     END IF;
 END //
 DELIMITER ;

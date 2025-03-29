@@ -14,6 +14,10 @@ BEGIN
 			update task set started_dtm = current_timestamp where task_id = @task_id;
 			insert into task_user (task_id, user_login_id, start_assignment_dtm) values (@task_id, @user_login_id, now());
 			insert into work_log (task_id, user_login_id, started_work_dtm) values (@task_id, @user_login_id, now());
+            
+            -- update stacked_task set order_id = order_id + 1;
+            
+            -- insert into stacked_task (stacked_task_id, order_id) values (@task_id, 1);
 		WHEN "pause" THEN
 			update task set paused_dtm = now()
             where task_id = @task_id;
@@ -28,6 +32,10 @@ BEGIN
             where task_id = @task_id;
 
 			insert into work_log (task_id, user_login_id, started_work_dtm) values (@task_id, @user_login_id, now());
+
+            -- update stacked_task set order_id = order_id + 1;
+            
+            -- update stacked_task set order_id = 1 where stacked_task_id = @task_id;
 		WHEN "complete" THEN
 			update task set paused_dtm = null, completed_dtm = now() where task_id = @task_id;
 

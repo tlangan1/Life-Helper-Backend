@@ -14,11 +14,11 @@ echo "******************************************"
 # Backup the selected database
 # ******************************************
 
-timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-mysqldump -u tlangan -p$1 --routines --triggers $2 > "dumps/$2.dump $timestamp.sql"
 mysqldump -u tlangan -p$1 --routines --triggers "life_helper" > "dumps/life_helper.dump $timestamp.sql"
 
 if [ "$2" != "life_helper" ]; then
+    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+    mysqldump -u tlangan -p$1 --routines --triggers $2 > "dumps/$2.dump $timestamp.sql"
     ../scripts/run.sh "tlangan" $1 "life_helper" "drop database $2;"
     ../scripts/run.sh "tlangan" $1 "life_helper" "create database $2;"
     # ******************************************
@@ -77,11 +77,11 @@ echo "******************************************"
 ../scripts/run.sh "tlangan" $1 $2 "../tables/helper_scripts/execute_p_create_table_schema_with_data.sql"
 
 # ******************************************
-# load the foreign key stored procedures
+# load the foreign keys
 # ******************************************
 
 echo "******************************************"
-echo " loading foreign key creation SPs"
+echo " loading foreign keys"
 echo "******************************************"
 
 ../foreign_keys/load_foreign_keys_sps.sh $1 $2
