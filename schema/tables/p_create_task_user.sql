@@ -13,6 +13,7 @@ create procedure p_create_task_user()
 	create table task_user (
 		task_id int not null,
 		user_login_id int not null,
+        order_id int not null default 0,
 		start_assignment_dtm datetime null,
 		end_assignment_dtm datetime null,
 		created_dtm datetime default current_timestamp not null,
