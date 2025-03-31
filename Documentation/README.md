@@ -34,6 +34,14 @@
 
 ## Notes
 
+- I need to add a .gitattributes file to all the Life Helper repos. See [this](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/) very good explanation. This mechanism allows developers to work in different environments that generate different line endings, LF versus CRLF, but the repo only commits LF ended files to the repo. The file should have the following contents
+  ```
+  * text=auto
+  ```
+  To initialize an existing environment execute the following command.
+  ```
+  git add --renormalize .
+  ```
 - The expiration date on web push subscriptions is determined by the subscription service.
 
 ## Issues

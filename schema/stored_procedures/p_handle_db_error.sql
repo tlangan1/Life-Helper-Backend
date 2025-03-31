@@ -8,13 +8,16 @@ CREATE PROCEDURE p_handle_db_error(IN error_event_information varchar(1000))
         SET @additional_information = JSON_EXTRACT(error_event_information, '$.additional_information');
         SET @error_no = JSON_EXTRACT(@error_information, '$.error_number');
         SET @sql_state = JSON_EXTRACT(@error_information, '$.sql_state');
-        SET @error_text = JSON_EXTRACT(@error_information, '$.error_text');
+        SET @error_text = JSON_UNQUOTE(JSON_EXTRACT(@error_information, '$.error_text'));
 		SET @sql_error = CONCAT('ERROR errno ', @error_no, ' (sqlstate ', @sql_state, '): ', @error_text);
         
+       
         select @sp_name as 'stored procedure name', @error_information as 'SQL error', @additional_information as 'Additional Information';
 		INSERT INTO sql_error (sql_error, stored_procedure_name, additional_information, created_dtm) values (@sql_error, @sp_name, @additional_information, now());
+        SET @error_message_to_return = concat("See sql_error with id: ", LAST_INSERT_ID(), " for more information");
+
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = @error_text;
+        SET MESSAGE_TEXT = @error_message_to_return;
     END //
 
 DELIMITER ;

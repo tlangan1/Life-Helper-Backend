@@ -14,10 +14,10 @@ echo "******************************************"
 # Backup the selected database
 # ******************************************
 
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 mysqldump -u tlangan -p$1 --routines --triggers "life_helper" > "dumps/life_helper.dump $timestamp.sql"
 
 if [ "$2" != "life_helper" ]; then
-    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
     mysqldump -u tlangan -p$1 --routines --triggers $2 > "dumps/$2.dump $timestamp.sql"
     ../scripts/run.sh "tlangan" $1 "life_helper" "drop database $2;"
     ../scripts/run.sh "tlangan" $1 "life_helper" "create database $2;"

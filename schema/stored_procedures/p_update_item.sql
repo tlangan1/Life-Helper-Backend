@@ -10,7 +10,7 @@ BEGIN
 			GET STACKED DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 				@errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
             rollback;
-
+            
             -- Always make sure the rollback proceeds the error logging.
             -- Otherwise, the error logging will also be rolled back.
             SET @error_information = JSON_OBJECT('error_number', @errno, 'sql_state', @sqlstate, 'error_text', @text);

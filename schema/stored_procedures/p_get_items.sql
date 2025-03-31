@@ -7,6 +7,7 @@ BEGIN
 	set @order = JSON_UNQUOTE(JSON_EXTRACT(data, '$.order'));
 	drop temporary table if exists t1;
 	drop temporary table if exists t2;
+    
 	CASE type
 		WHEN "objectives" THEN
 		    create temporary table t1 as select objective_id as item_id, objective.*
@@ -19,14 +20,15 @@ BEGIN
             and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, g.goal_id = JSON_EXTRACT(data, '$.item_id'));
 		WHEN "tasks" THEN
 			if JSON_UNQUOTE(JSON_EXTRACT(data, '$.view')) = "my-tasks-view" THEN
-				create temporary table t1 as select t.task_id as item_id, t.*
+				create temporary table t1 as select t.task_id as item_id, t.*, tu.user_login_id
 				from task t inner join task_user tu on t.task_id = tu.task_id
 				where tu.user_login_id = JSON_EXTRACT(data, '$.assigned_to')
                 and tu.end_assignment_dtm Is Null
                 order by tu.order_id;
             ELSE
-				create temporary table t1 as select t.task_id as item_id, t.*
+				create temporary table t1 as select t.task_id as item_id, t.*, tu.user_login_id
 				from task t inner join goal_task gt on t.task_id = gt.task_id
+                left outer join task_user tu on t.task_id = tu.task_id
 				where gt.goal_id = JSON_EXTRACT(data, '$.parent_id')
 				and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 			END IF;
@@ -34,6 +36,8 @@ BEGIN
 			select * from web_push_subscription where unsubscribed_or_expired_dtm Is Null;
 		WHEN "notes" THEN
 			call p_get_notes(data);
+		WHEN "thoughts" THEN
+			call p_get_thoughts(data);
 		WHEN "user_login" THEN
 			call p_get_user_login(data);
 	END CASE;
