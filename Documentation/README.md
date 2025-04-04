@@ -5,6 +5,9 @@
 - [Table of contents](#table-of-contents)
 - [Notes](#notes)
 - [Issues](#issues)
+- [Development Process](#development-process)
+  - [Setup](#setup)
+  - [Use](#use)
 - [Diagrams](#diagrams)
   - [Web Push Subscription Process](#web-push-subscription-process)
   - [Web Push Process](#web-push-process)
@@ -51,6 +54,62 @@
   Get-Process -Id (Get-NetTCPConnection -LocalPort 3001).OwningProcess
   ```
   Then look up the process id in task manager to find the process. The easiest way to do this is to include pid in the columns and sort by pid.
+
+## Development Process
+
+### Setup
+
+- During the development process it is often helpful to be able to create tasks or make notes, etcetera in the production database. Because it is awkward to re-point the data server to the production data environment and, depending on the current state of the data server code and the application code, may be impossible I am enabling the running of two life helper systems at the same time, one that interacts with the production database, life_helper, and one that interacts with the development database, test_life_helper.
+- The cleanest implementation of this capability would require using the last committed code in both the data server and the application as stored on Github for the production environment. Run the following to set up that environment. You can click the `Run Command in terminal` link in the non-preview version of this file to execute these commands. The `Run Markdown Command Tom` extension is what enables this functionality.
+
+  ```bash
+  if [ "${PWD##*/}" != "Life Helper Docs and Schema" ]; then
+    printf "Not in the correct directory"
+    exit -1
+  fi
+  printf "In correct directory"
+  cd ..
+  rm -rf Production-Clones
+  mkdir Production-Clones
+  cd Production-Clones
+  git clone https://github.com/tlangan1/Express-Server.git
+  cd E*
+  npm i
+  cd ..
+  git clone https://github.com/tlangan1/Life-Helper.git
+  cd L*
+  npm i
+  cd ../..
+  cd "Life Helper Docs and Schema"
+  ```
+
+### Use
+
+- As of 4/4/2025 here are the instructions:
+- `Express Server Setup`
+  - Open the "Production-Clones/Express-Server" directory in VSCode.
+  - Set the port to 3003 in server.js. This will not be necessary in the next version.
+  - Set the port in config.json to 3002 and the database to life_helper. This will not be necessary in the next version.
+  - Add the following command to the scripts node in package.json
+    ```
+        "prod": "nodemon --inspect server.js environment=prod",
+    ```
+    This will not be necessary in the next version.
+  - Copy the certs directory from the local source into this directory. This will continue to be necessary as I do not want to store any certs on Github.
+  - Open the "Production-Clones/Express-Server" directory in bash and execute the following command
+    ```
+    npm run prod
+    ```
+- `Life Helper Setup`
+  - Open the "Production-Clones/Life-Helper" in VSCode and make the following changes:
+    - Change the port in vite.config.js to 3002.
+    - Change the port in the GlobalStateProvider component to 3003. This will not be necessary in the future.
+  - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
+    ```
+    npm run dev
+    ```
+- `Start the application`
+  - Open a browser and go to https://192.168.1.10:3002/default-view
 
 ## Diagrams
 
@@ -182,8 +241,12 @@ erDiagram
 #### Production Environment
 
 - When satisfied with the behavior of the application upgrade the production environment with the following script.
-  ```
-  ./upgrade_or_create_environment.sh -UnderAWhiteSky1 test_life_helper
+  ```bash
+  cd schema
+  cd up*
+  ./upgrade_or_create_environment.sh -UnderAWhiteSky1 life_helper
+  cd ..
+  cd ..
   ```
 
 ### Test Driven Database Development

@@ -26,6 +26,8 @@ BEGIN
 			call p_update_goal(data);
 		WHEN "task" THEN
 			call p_update_task(data);
+		WHEN "thought" THEN
+			call p_update_thought(data);
 -- 		WHEN "web_push_subscription" THEN
 -- 		WHEN "note" THEN
 -- 		WHEN "user_login" THEN
