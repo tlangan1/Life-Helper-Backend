@@ -9,7 +9,7 @@ CREATE PROCEDURE p_add_thought(IN data JSON)
 			set @order_id = 1;
         END IF;
         
-		insert into thought (thought, order_id) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.thought_text')), @order_id);
+		insert into thought (thought, order_id) values (JSON_UNQUOTE(JSON_EXTRACT(data, '$.thought')), @order_id);
 	END //
 
 DELIMITER ;
