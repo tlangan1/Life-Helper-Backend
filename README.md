@@ -1,4 +1,5 @@
-<h1 align="center">Life Helper Application</h1s>
+<h1 align="center">Life Helper Application</h1>
+<p align="center">The app that boldly goes where only a few hundred million have gone before.</p>
 
 ## Table of contents
 
@@ -32,12 +33,15 @@
   - [Root CA Management](#root-ca-management)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
+- [Web Push and Caching](#web-push-and-caching)
+  - [Web Push](#web-push)
+  - [Caching](#caching)
 - [Abandoned Stuff](#abandoned-stuff)
   - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
 
 ## Notes
 
-- I need to add a .gitattributes file to all the Life Helper repos. See [this](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/) very good explanation. This mechanism allows developers to work in different environments that generate different line endings, LF versus CRLF, but the repo only commits LF ended files to the repo. The file should have the following contents
+- I added a .gitattributes file to all the Life Helper repos. See [this](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/) very good explanation. This mechanism allows developers to work in different environments that generate different line endings, LF versus CRLF, but the repo only commits LF ended files to the repo. The file contains
   ```
   * text=auto
   ```
@@ -415,8 +419,25 @@ erDiagram
 
 ### Future AWS Implementation
 
+- [ ] Move Life Helper to AWS
+  - [ ] Implement the Life Helper schema in AWS [RDB](https://us-east-1.console.aws.amazon.com/rds/home?region=us-east-1).
+    - [ ] Document the creation of this database in the AWS folder in a subfolder called `RDS database creation 9-25-2024`.
+    - [ ] Use [this](https://duckduckgo.com/?q=how+to+use+AWS+secrets+for+a+RDS+database+call+from+an+S3+application&iax=videos&ia=videos&iai=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DNg_zi11N4_c) as a guide.
 - I am considering [this](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html) AWS cloud based database solution.
 - [Here](https://medium.com/@t.unamka/connecting-to-an-rds-or-aurora-instance-in-a-private-subnet-using-a-jump-box-bastion-host-ba6201464b73) is a link that provides some relevant information concerning the AWS architecture.
+
+## Web Push and Caching
+
+### Web Push
+
+- Document the application behavior if a user `accepts a web push subscription`.
+- Document the application behavior if a user `does not accepts a web push subscription`.
+
+### Caching
+
+- What to do about caching??? Ideas like the following:
+  - When the application receives a web push notification about a task being added it should respond by adding the task to the cache or other persistent storage such as indexed database, etc. See the [Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API) for information about the options.
+  - Consider using Github repos “sw-precache” and “offline-plugin”.
 
 ## Abandoned Stuff
 
