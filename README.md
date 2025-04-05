@@ -216,10 +216,16 @@ erDiagram
   - If there are any changes to the existing tests/objects then make them in the load_existing_test_objects.sh script. These are the tests which are executed by the run_existing_tests.sh script.
   - If there are any new tests/objects then update the load_new_test_objects.sh and run_new_test.sh scripts appropriately.
 - The second step is to run the built in tests as follows:
-  ```
+  ```bash
+  if [ "${PWD##*/}" != "Life Helper Docs and Schema" ]; then
+    printf "Not in the correct directory"
+    exit -1
+  fi
+  printf "In correct directory"
   cd schema
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests
+  cd ../..
   ```
   - The test script calls the database upgrade script which rebuilds the entire schema
   - The parameters have the following meaning:
@@ -228,6 +234,7 @@ erDiagram
     - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
   - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
   ```
+  cd schema
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
   ```

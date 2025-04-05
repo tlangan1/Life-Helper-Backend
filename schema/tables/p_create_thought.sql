@@ -8,6 +8,7 @@ CREATE PROCEDURE p_create_thought()
 
 	create table thought (
 		thought_id int not null auto_increment,
+		user_login_id int not null,
 		thought varchar(1000) not null,
         order_id int not null,
 		created_dtm datetime default current_timestamp not null,
