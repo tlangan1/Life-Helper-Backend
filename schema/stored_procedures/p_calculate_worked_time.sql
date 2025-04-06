@@ -14,10 +14,10 @@ BEGIN
     -- overlap the time frame defined by @start_dtm and @end_dtm.
     drop table if exists relevant_work_log_rows;
     
-    create temporary table relevant_work_log_rows SELECT *
+    create temporary table relevant_work_log_rows SELECT user_login_id, started_work_dtm, Ifnull(stopped_work_dtm, now()) as stopped_work_dtm
 	FROM work_log
 	where started_work_dtm < @end_dtm
-	and stopped_work_dtm > @start_dtm
+	and Ifnull(stopped_work_dtm, now()) > @start_dtm
     and user_login_id = IFNULL(@user_login_id, user_login_id);
 
 
