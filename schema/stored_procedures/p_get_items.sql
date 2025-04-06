@@ -4,7 +4,7 @@ DELIMITER //
 CREATE PROCEDURE p_get_items(IN type varchar(30), IN data JSON)
 BEGIN
 	set @sort = JSON_UNQUOTE(JSON_EXTRACT(data, '$.sort'));
-	set @order = JSON_UNQUOTE(JSON_EXTRACT(data, '$.order'));
+	set @direction = JSON_UNQUOTE(JSON_EXTRACT(data, '$.direction'));
 	drop temporary table if exists t1;
 	drop temporary table if exists t2;
     
@@ -58,35 +58,11 @@ BEGIN
 			WHEN JSON_EXTRACT(data, '$.deleted_items') = "no" THEN deleted_dtm Is Null
 			ELSE 1 = 1
 		END;
--- 		Set @assigned_to = JSON_EXTRACT(data, '$.assigned_to');
--- 		IF @assigned_to Is Null THEN
-			select * from t2
-			order by item_name asc;
--- 		ELSE
--- 			CASE type
--- 				WHEN "objectives" THEN
--- 					select * from t2
--- 					where objective_id in (select o.objective_id from objective o inner join objective_goal og on t2.objective_id = og.objective_id
--- 					inner join goal g on og.goal_id = g.goal_id
--- 					inner join goal_task gt on gt.goal_id = g.goal_id
--- 					inner join task t on t.task_id = gt.task_id
--- 					inner join task_user tu on t.task_id = tu.task_id
--- 					where tu.user_login_id = @assigned_to)
--- 					order by item_name asc;
--- 				WHEN "goals" THEN
--- 					select * from t2
--- 					where goal_id in (select g.goal_id from goal g inner join goal_task gt on t2.goal_id = gt.goal_id
--- 					inner join task t on t.task_id = gt.task_id
--- 					inner join task_user tu on t.task_id = tu.task_id
--- 					where tu.user_login_id = @assigned_to)
--- 					order by item_name asc;
--- 				WHEN "tasks" THEN
--- 					select * from t2
--- 					where task_id in (select t.task_id from task t inner join task_user tu on t2.task_id = tu.task_id
--- 					where tu.user_login_id = @assigned_to)
--- 					order by item_name asc;
--- 			END CASE;
--- 		END IF;
+		
+        SET @sortSQL = CONCAT('select * from t2 order by ', @sort, ' ', @direction);
+		PREPARE prepared_statement FROM @sortSQL;
+		EXECUTE prepared_statement;
+		DEALLOCATE PREPARE prepared_statement;
     END IF;
 END //
 DELIMITER ;
