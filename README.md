@@ -89,16 +89,11 @@
 
 ### Use
 
-- As of 4/4/2025 here are the instructions:
+- As of 4/6/2025 here are the instructions:
+- The script in the [Development Environment](#development-environment) section of this document must have been executed after all changes have been made and have ran successfully.
+- Then the script in the [Production Environment](#production-environment) section of this document must be executed.
 - `Express Server Setup`
   - Open the "Production-Clones/Express-Server" directory in VSCode.
-  - Set the port to 3003 in server.js. This will not be necessary in the next version.
-  - Set the port in config.json to 3002 and the database to life_helper. This will not be necessary in the next version.
-  - Add the following command to the scripts node in package.json
-    ```
-        "prod": "nodemon --inspect server.js environment=prod",
-    ```
-    This will not be necessary in the next version.
   - Copy the certs directory from the local source into this directory. This will continue to be necessary as I do not want to store any certs on Github.
   - Open the "Production-Clones/Express-Server" directory in bash and execute the following command
     ```
@@ -107,7 +102,6 @@
 - `Life Helper Setup`
   - Open the "Production-Clones/Life-Helper" in VSCode and make the following changes:
     - Change the port in vite.config.js to 3002.
-    - Change the port in the GlobalStateProvider component to 3003. This will not be necessary in the future.
   - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
     ```
     npm run dev
