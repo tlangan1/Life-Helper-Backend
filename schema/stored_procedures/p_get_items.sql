@@ -54,8 +54,8 @@ BEGIN
 			ELSE 1 = 1
 		END
 		AND CASE
-			WHEN JSON_EXTRACT(data, '$.deleted_items') = "yes" THEN deleted_dtm Is Not Null
-			WHEN JSON_EXTRACT(data, '$.deleted_items') = "no" THEN deleted_dtm Is Null
+			WHEN JSON_EXTRACT(data, '$.aborted_items') = "yes" THEN aborted_dtm Is Not Null
+			WHEN JSON_EXTRACT(data, '$.aborted_items') = "no" THEN aborted_dtm Is Null
 			ELSE 1 = 1
 		END;
 		

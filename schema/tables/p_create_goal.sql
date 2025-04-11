@@ -15,7 +15,7 @@ CREATE PROCEDURE p_create_goal()
 		item_description varchar(1000) not null,
 		started_dtm datetime null,
 		completed_dtm datetime null,
-		deleted_dtm datetime null,
+		aborted_dtm datetime null,
 		created_dtm datetime default current_timestamp not null,
 		last_update_dtm datetime on update current_timestamp,
 		PRIMARY KEY (goal_id)

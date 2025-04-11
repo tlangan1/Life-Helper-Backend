@@ -6,7 +6,7 @@ BEGIN
 	Set @update_type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.update_type'));
 
 	CASE @update_type
-		WHEN "cancel_delete" THEN
-			update goal set deleted_dtm = current_timestamp() where goal_id = JSON_EXTRACT(data, '$.item_id');
+		WHEN "abort" THEN
+			update goal set aborted_dtm = current_timestamp() where goal_id = JSON_EXTRACT(data, '$.item_id');
 	END CASE;
 END //
