@@ -4,8 +4,10 @@
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
-- [Notes](#notes)
-- [Issues](#issues)
+- [Business Logic/Application Behavior](#business-logicapplication-behavior)
+  - [Overview](#overview)
+  - [Current Application Behavior](#current-application-behavior)
+  - [Potential Future Application Behavior](#potential-future-application-behavior)
 - [Development Process](#development-process)
   - [Setup](#setup)
   - [Use](#use)
@@ -23,41 +25,65 @@
     - [Development Environment](#development-environment)
     - [Production Environment](#production-environment)
   - [Test Driven Database Development](#test-driven-database-development)
-  - [mysqlsh.exe](#mysqlshexe)
   - [Miscellaneous](#miscellaneous)
-  - [Hierarchical versus web-like item structure](#hierarchical-versus-web-like-item-structure)
-  - [Front End](#front-end)
-    - [Current Application Behavior](#current-application-behavior)
-    - [Potential Future Application Behavior](#potential-future-application-behavior)
-    - [Registration \& Login](#registration--login)
-  - [Root CA Management](#root-ca-management)
+  - [Registration \& Login](#registration--login)
   - [Configure an environment](#configure-an-environment)
   - [Future AWS Implementation](#future-aws-implementation)
 - [Web Push and Caching](#web-push-and-caching)
   - [Web Push](#web-push)
   - [Caching](#caching)
-- [Abandoned Stuff](#abandoned-stuff)
+- [Abandoned](#abandoned)
   - [MySQL Workbench Compare Schemas](#mysql-workbench-compare-schemas)
+- [Appendix](#appendix)
+  - [Notes \& Issues](#notes--issues)
+  - [mysqlsh.exe](#mysqlshexe)
+  - [Root CA Management](#root-ca-management)
 
-## Notes
+## Business Logic/Application Behavior
 
-- I added a .gitattributes file to all the Life Helper repos. See [this](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/) very good explanation. This mechanism allows developers to work in different environments that generate different line endings, LF versus CRLF, but the repo only commits LF ended files to the repo. The file contains
-  ```
-  * text=auto
-  ```
-  To initialize an existing environment execute the following command.
-  ```
-  git add --renormalize .
-  ```
-- The expiration date on web push subscriptions is determined by the subscription service.
+### Overview
 
-## Issues
+- The Life Helper application is designed to organize and track the effort required to accomplish things. The primary constituent pieces used to model this are objectives, goals and tasks.
+  - `Objectives`: These are the objects in the data structure that contain the highest level description of a thing that is to be accomplished.
+  - `Goals`: In order to accomplish an objective there are goals that need to be realized.
+  - `Tasks`: In order to accomplish a goal there are tasks that need to be accomplished. Tasks are the units of actual work done by users that are tracked.
+- The application supports a web-like relationship between objectives goals and tasks. For example, a goal may be required by one or more objectives and a task may be required by one or more goals. Although the relationship between these objects need not be strictly hierarchical, you can organize them this way if you like.
+- The application allows users to track the time they have spent on tasks, when they were started, when they were completed, etcetera. Goals derive these characteristics from their constituent tasks and objectives derive these characteristics from their constituent goals. For example, if a user starts a task that is associated with a goal which has no started tasks then that goal, by implication, is now considered started.
 
-- If a port is in use use the following command in `Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
-  ```
-  Get-Process -Id (Get-NetTCPConnection -LocalPort 3001).OwningProcess
-  ```
-  Then look up the process id in task manager to find the process. The easiest way to do this is to include pid in the columns and sort by pid.
+### Current Application Behavior
+
+- a task is `active` if it is started but not completed.
+- a task is `inactive` if it is not `active, completed or aborted`.`
+- A task can be aborted at any time before it is completed.
+
+```mermaid
+  flowchart LR
+      inactive-- "start" -->active
+      active-- "aborted" -->aborted
+      active-- "completed" -->completed
+```
+
+- An active task can be `paused` and `resumed`.
+
+```mermaid
+  flowchart LR
+      running-- "paused" --> paused
+      paused-- "resumed" --> running
+
+```
+
+- A goal is inherits its state from the tasks associated with it.
+
+### Potential Future Application Behavior
+
+- A task can be un-started, un-aborted or un-completed but only with an explanation.
+
+```mermaid
+  flowchart LR
+      inactive<-. "start or un-started with explanation" .->active
+      active<-. "aborted or un-aborted with explanation" .->aborted
+      active<-. "completed or un-completed with explanation" .->completed
+```
 
 ## Development Process
 
@@ -104,8 +130,9 @@
     - Change the port in vite.config.js to 3002.
   - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
     ```
-    npm run dev
+    npm run dev_no_debug
     ```
+    Use the no_debug launch so that one can still continue to debug the development version. There may be other ways to deal with the port conflict between debug sessions but this will work for now.
 - `Start the application`
   - Open a browser and go to https://192.168.1.10:3002/default-view
 
@@ -141,9 +168,9 @@
 
 ### Back End
 
-- Each data end point is handled by a branch of code in `server.js`. These endpoints are of the form .../get/[item name], .../add/[item name], .../delete/[item name] and .../update/[item name].
+- Each data end point is handled by a branch of code in `server.js`.
 - Each data endpoint maps to a database call in `db.js`. Each database call is handled by a stored procedure in the database.
-- Note that the database deletes are actually just logical deletes where the deleted_dtm column of a given item is updated to the current date time.
+- Note that the database deletes are actually just logical deletes.
 
 ### Database
 
@@ -303,15 +330,6 @@ erDiagram
     - `expect` goal 1 and objective 3 to be completed.
     - `expect` objective 1, objective 2 and goal 3 to remain un-completed.
 
-### mysqlsh.exe
-
-- Use the following syntax to use mysqlsh from the command line
-  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
-  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
-  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
-  - To check the status of the connection enter `shell.status()`
-  - To exit from the session enter `\quit`
-
 ### Miscellaneous
 
 - `MySQL will create and index when a foreign key is created if it deems that that foreign key is not properly supported giving the existing indexes.` For example, consider the entity object_goal where the primary key/index is on object_id, goal_id. When I create the foreign key to objective MySQL does not create an index as the primary is already first indexed on object_id; however, when I create the foreign key to goal, MySQL creates a non-unique index on goal_id to assist in that relationship.
@@ -327,46 +345,7 @@ erDiagram
     ```
     This design should ensure that no database errors are returned to the application.
 
-### Hierarchical versus web-like item structure
-
-- The relationship between objectives goals and tasks is not strictly hierarchical. A goal may be required by one or more objectives and a task may be required by one or more goals.
-
-### Front End
-
-#### Current Application Behavior
-
-- a task is `active` if it is started but not completed.
-- a task is `inactive` if it is not `active, completed or aborted`.`
-- A task can be deleted at any time before it is completed.
-
-```mermaid
-  flowchart LR
-      inactive-- "start" -->active
-      active-- "deleted/canceled" -->aborted
-      active-- "completed" -->completed
-```
-
-- An active task can be `paused` and `resumed`.
-
-```mermaid
-  flowchart LR
-      running-- "paused" --> paused
-      paused-- "resumed" --> running
-
-```
-
-#### Potential Future Application Behavior
-
-- A task can be un-started, un-aborted or un-completed but only with an explanation.
-
-```mermaid
-  flowchart LR
-      inactive<-. "start or un-started with explanation" .->active
-      active<-. "aborted or un-aborted with explanation" .->aborted
-      active<-. "completed or un-completed with explanation" .->completed
-```
-
-#### Registration & Login
+### Registration & Login
 
 - This section is accurate as of 3/22/2025
 - Registration process
@@ -384,24 +363,6 @@ erDiagram
       - This process is implemented in such a way as to minimize the exposure of the password. To accomplish this the data server requests the user data from the database. The most relevant piece of data for the login process is the hashed password. The actual password is never sent to the database to isolate it from being captured in a logging event, etcetera. The bcrypt library then uses the actual password and the hashed password to determine if the actual password is correct and respond accordingly.
   - Federated: not yet implemented
   - Passkey: not yet implemented
-
-### Root CA Management
-
-- I created a root CA certificates for both the windows machine and the linux machine using `mkcert` using the following command:
-  ```
-  mkcert install
-  ```
-  mkcert makes every effort to put this certificate where it needs to go on the machine on which it was created but you may need to manually import it into a browser, import it into a credentials manager (windows) or place it in the file system (linux) in a special location if that does not happen.
-- The relevant file is the one that begins "-----BEGIN CERTIFICATE-----".
-- If you want to access the front end web server from another device then you need to manually distribute it to that device.
-  - In the case of a laptop you can just import it into the browser you want to use. Just rename the file to the correct extension for the given browser. For example, to install the root CA certificate from the linux machine into chrome on the windows machine do the following:
-    - Rename it so that it has a .CRT extension.
-    - Open settings and go to Privacy and security --> Security --> Manage certificates --> Local certificates and then clicked "Manage imported certificates from Windows". Click "Import" and then "Next" and browse to the file and imported it.
-  - In the case of an android phone do the following:
-    - Rename it to a .PEM or .CRT file...I think Android accepts both.
-    - Bluetooth the certificate to the phone.
-    - Go to Settings --> Security and privacy --> More security settings --> Install from phone storage --> CA certificate and click the `Install Anyway` button. Enter a PIN if necessary and then click the "Downloads" folder and select the certificate file.
-- If the front end web server is running on the linux machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine. Likewise, if the front end web server is running on the windows machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine.
 
 ### Configure an environment
 
@@ -440,7 +401,7 @@ erDiagram
   - When the application receives a web push notification about a task being added it should respond by adding the task to the cache or other persistent storage such as indexed database, etc. See the [Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API) for information about the options.
   - Consider using Github repos “sw-precache” and “offline-plugin”.
 
-## Abandoned Stuff
+## Abandoned
 
 ### MySQL Workbench Compare Schemas
 
@@ -468,3 +429,49 @@ erDiagram
   - I created the following scripts in the schema/bootstrap directory to give me very granular information about the differences between objects such as stored procedure and triggers in the two databases.
     - diff_stored_procedures.sql
     - diff_triggers.sql
+
+## Appendix
+
+### Notes & Issues
+
+- I added a .gitattributes file to all the Life Helper repos. See [this](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/) very good explanation. This mechanism allows developers to work in different environments that generate different line endings, LF versus CRLF, but the repo only commits LF ended files to the repo. The file contains
+  ```
+  * text=auto
+  ```
+  To initialize an existing environment execute the following command.
+  ```
+  git add --renormalize .
+  ```
+- The expiration date on web push subscriptions is determined by the subscription service.
+- If a port is in use use the following command in `Powershell` to determine the process id of the process using the port. In this example we are checking port 3000.
+  ```
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 3001).OwningProcess
+  ```
+  Then look up the process id in task manager to find the process. The easiest way to do this is to include pid in the columns and sort by pid.
+
+### mysqlsh.exe
+
+- Use the following syntax to use mysqlsh from the command line
+  - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
+  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
+  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
+  - To check the status of the connection enter `shell.status()`
+  - To exit from the session enter `\quit`
+
+### Root CA Management
+
+- I created a root CA certificates for both the windows machine and the linux machine using `mkcert` using the following command:
+  ```
+  mkcert install
+  ```
+  mkcert makes every effort to put this certificate where it needs to go on the machine on which it was created but you may need to manually import it into a browser, import it into a credentials manager (windows) or place it in the file system (linux) in a special location if that does not happen.
+- The relevant file is the one that begins "-----BEGIN CERTIFICATE-----".
+- If you want to access the front end web server from another device then you need to manually distribute it to that device.
+  - In the case of a laptop you can just import it into the browser you want to use. Just rename the file to the correct extension for the given browser. For example, to install the root CA certificate from the linux machine into chrome on the windows machine do the following:
+    - Rename it so that it has a .CRT extension.
+    - Open settings and go to Privacy and security --> Security --> Manage certificates --> Local certificates and then clicked "Manage imported certificates from Windows". Click "Import" and then "Next" and browse to the file and imported it.
+  - In the case of an android phone do the following:
+    - Rename it to a .PEM or .CRT file...I think Android accepts both.
+    - Bluetooth the certificate to the phone.
+    - Go to Settings --> Security and privacy --> More security settings --> Install from phone storage --> CA certificate and click the `Install Anyway` button. Enter a PIN if necessary and then click the "Downloads" folder and select the certificate file.
+- If the front end web server is running on the linux machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine. Likewise, if the front end web server is running on the windows machine the SSL certificate that Vite will present will reference the root CA certificate created on that machine.
