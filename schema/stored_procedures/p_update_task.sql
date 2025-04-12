@@ -11,13 +11,9 @@ BEGIN
 		WHEN "start" THEN
 			call p_update_running_task(data);
 
-			update task set started_dtm = current_timestamp where task_id = @task_id;
+			update task set started_dtm = now(), starting_user = @user_login_id where task_id = @task_id;
 			insert into task_user (task_id, user_login_id, start_assignment_dtm) values (@task_id, @user_login_id, now());
 			insert into work_log (task_id, user_login_id, started_work_dtm) values (@task_id, @user_login_id, now());
-            
-            -- update stacked_task set order_id = order_id + 1;
-            
-            -- insert into stacked_task (stacked_task_id, order_id) values (@task_id, 1);
 		WHEN "pause" THEN
 			update task set paused_dtm = now()
             where task_id = @task_id;
@@ -37,13 +33,13 @@ BEGIN
             
             -- update stacked_task set order_id = 1 where stacked_task_id = @task_id;
 		WHEN "complete" THEN
-			update task set paused_dtm = null, completed_dtm = now() where task_id = @task_id;
+			update task set paused_dtm = null, completed_dtm = now(), completing_user = @user_login_id where task_id = @task_id;
 
             update work_log set stopped_work_dtm = now()
             where task_id = @task_id
             and stopped_work_dtm Is Null;
 		WHEN "abort" THEN
-			update task set paused_dtm = null, aborted_dtm = now() where task_id = @task_id;
+			update task set paused_dtm = null, aborted_dtm = now(), aborting_user = @user_login_id where task_id = @task_id;
 
             update work_log set stopped_work_dtm = now()
             where task_id = @task_id

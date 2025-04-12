@@ -16,7 +16,9 @@ CREATE PROCEDURE p_create_objective()
 		started_dtm datetime null,
 		completed_dtm datetime null,
 		aborted_dtm datetime null,
+        aborting_user int null,
 		created_dtm datetime default current_timestamp not null,
+        creating_user int not null,
 		last_update_dtm datetime on update current_timestamp,
 		PRIMARY KEY (objective_id)
 	);

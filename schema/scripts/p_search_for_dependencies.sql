@@ -10,7 +10,7 @@ create procedure p_search_for_dependencies(IN pattern varchar(100))
 		AND ROUTINE_SCHEMA = ', "'", database(), "'",
 		' AND ROUTINE_DEFINITION LIKE ', "'%", pattern, "%'");
         
-	select @dependencySQL;
+	-- select @dependencySQL;
 	PREPARE prepared_statement FROM @dependencySQL;
 	EXECUTE prepared_statement;
 	DEALLOCATE PREPARE prepared_statement;
