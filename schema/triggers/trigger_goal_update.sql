@@ -64,7 +64,7 @@ ON goal FOR EACH ROW
 			select count(*) into @open_goal_count from objective_goal og inner join goal g on og.goal_id = g.goal_id
 			where og.objective_id = id
             and   g.completed_dtm Is Null
-			and   g.aborted_dtm Is Null;
+			and   g.canceled_dtm Is Null;
 			
 			IF @open_goal_count = 0 THEN
 				update objective set completed_dtm = now() where objective_id = id;

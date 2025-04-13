@@ -38,8 +38,8 @@ BEGIN
             update work_log set stopped_work_dtm = now()
             where task_id = @task_id
             and stopped_work_dtm Is Null;
-		WHEN "abort" THEN
-			update task set paused_dtm = null, aborted_dtm = now(), aborting_user = @user_login_id where task_id = @task_id;
+		WHEN "cancel" THEN
+			update task set paused_dtm = null, canceled_dtm = now(), canceling_user = @user_login_id where task_id = @task_id;
 
             update work_log set stopped_work_dtm = now()
             where task_id = @task_id

@@ -8,8 +8,8 @@ BEGIN
 
 
 	CASE @update_type
-		WHEN "abort" THEN
-			update objective set aborted_dtm = current_timestamp(), aborting_user = @user_login_id
+		WHEN "cancel" THEN
+			update objective set canceled_dtm = current_timestamp(), canceling_user = @user_login_id
             where objective_id = JSON_EXTRACT(data, '$.item_id');
 	END CASE;
 END //

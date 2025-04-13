@@ -65,7 +65,7 @@ ON task FOR EACH ROW
 			select count(*) into @open_task_count from goal_task gt inner join task t on gt.task_id = t.task_id
 			where gt.goal_id = id
             and   t.completed_dtm Is Null
-			and   t.aborted_dtm Is Null;
+			and   t.canceled_dtm Is Null;
 			
 			IF @open_task_count = 0 THEN
 				update goal set completed_dtm = now() where goal_id = id;
