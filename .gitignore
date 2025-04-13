@@ -1,2 +1,3 @@
 root CA certificates
 **/*.dump*.sql
+*.txt

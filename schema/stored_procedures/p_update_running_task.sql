@@ -11,7 +11,7 @@ BEGIN
 	and t.started_dtm is not null
 	and t.paused_dtm is null
 	and t.completed_dtm Is Null
-	and t.aborted_dtm Is Null;
+	and t.canceled_dtm Is Null;
 	
 	if @running_task_id != @task_id then
 		update task set paused_dtm = now() where task_id = @running_task_id;

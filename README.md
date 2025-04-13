@@ -53,13 +53,13 @@
 ### Current Application Behavior
 
 - a task is `active` if it is started but not completed.
-- a task is `inactive` if it is not `active, completed or aborted`.`
-- A task can be aborted at any time before it is completed.
+- a task is `inactive` if it is not `active, completed or canceled`.`
+- A task can be canceled at any time before it is completed.
 
 ```mermaid
   flowchart LR
       inactive-- "start" -->active
-      active-- "aborted" -->aborted
+      active-- "canceled" -->canceled
       active-- "completed" -->completed
 ```
 
@@ -76,12 +76,12 @@
 
 ### Potential Future Application Behavior
 
-- A task can be un-started, un-aborted or un-completed but only with an explanation.
+- A task can be un-started, un-canceled or un-completed but only with an explanation.
 
 ```mermaid
   flowchart LR
       inactive<-. "start or un-started with explanation" .->active
-      active<-. "aborted or un-aborted with explanation" .->aborted
+      active<-. "canceled or un-canceled with explanation" .->canceled
       active<-. "completed or un-completed with explanation" .->completed
 ```
 
