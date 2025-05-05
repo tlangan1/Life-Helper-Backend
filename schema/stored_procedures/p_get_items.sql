@@ -13,11 +13,15 @@ BEGIN
 		    create temporary table t1 as select objective_id as item_id, objective.*
             from objective
             where if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, objective_id = JSON_EXTRACT(data, '$.item_id'));
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "objective" THEN
 		WHEN "goals" THEN
 			create temporary table t1 as select g.goal_id as item_id, g.*
 			from goal g inner join objective_goal og on g.goal_id = og.goal_id
 			where og.objective_id = JSON_EXTRACT(data, '$.parent_id')
             and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, g.goal_id = JSON_EXTRACT(data, '$.item_id'));
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "goal" THEN
 		WHEN "tasks" THEN
 			if JSON_UNQUOTE(JSON_EXTRACT(data, '$.view')) = "my-tasks-view" THEN
 				create temporary table t1 as select t.task_id as item_id, t.*, tu.user_login_id
@@ -32,12 +36,24 @@ BEGIN
 				where gt.goal_id = JSON_EXTRACT(data, '$.parent_id')
 				and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 			END IF;
+		WHEN "task" THEN
+			select t.task_id as item_id, t.*, tu.user_login_id
+			from task t left outer join task_user tu on t.task_id = tu.task_id
+			where t.task_id = JSON_EXTRACT(data, '$.item_id');
 		WHEN "subscriptions" THEN
 			select * from web_push_subscription where unsubscribed_or_expired_dtm Is Null;
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "subscription" THEN
 		WHEN "notes" THEN
 			call p_get_notes(data);
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "note" THEN
 		WHEN "thoughts" THEN
 			call p_get_thoughts(data);
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "thought" THEN
+--      This branch is not used as of 5/4/2025
+-- 		WHEN "user_logins" THEN
 		WHEN "user_login" THEN
 			call p_get_user_login(data);
 	END CASE;

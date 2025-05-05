@@ -280,6 +280,7 @@ erDiagram
   cd ..
   cd ..
   ```
+- Then create new clones using [this](#development-process) process.
 
 ### Test Driven Database Development
 
