@@ -76,6 +76,28 @@ ON goal FOR EACH ROW
 		-- close the cursor
 		CLOSE cur_objectives;
 	END IF;
+    IF OLD.completed_dtm is not null AND NEW.completed_dtm is null THEN
+		-- This logic enforces the integrity of the data. It ensures
+        -- that if an objective relies on a goal whose state has changed from
+        -- completed to not completed then the objective should be in the
+        -- not completed state. The logic is enforced as follows:
+        -- A goal has been uncompleted. If there are any objectives which
+        -- depend on this goal and which are in the completed state then
+        -- those objectives should be uncompleted.       
+		-- open the cursor
+
+		OPEN cur_objectives;
+		
+		FETCH cur_objectives into id;
+		WHILE Not done DO
+            update objective set completed_dtm = null where objective_id = id;
+			
+			FETCH cur_objectives into id;
+		END WHILE;
+
+		-- close the cursor
+		CLOSE cur_objectives;
+    END IF;
 
 	drop temporary table if exists trigger_goal_update_temp;
     END //

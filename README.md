@@ -287,6 +287,8 @@ erDiagram
 - As of 1/16/2025 here are the list of available tests:
   - `p_task_and_goal_trigger_test_1`
   - `p_task_and_goal_trigger_test_2`
+  - `p_task_and_goal_trigger_test_3`
+  - `p_task_calculate_worked_time_test_1`
 - `p_task_and_goal_trigger_test_1`: Test for task and goal update triggers. This test will ensure that the `started status` is properly propagated from tasks to goals to objectives.
 
   - Here is a diagram of the objective/goal/task structure for the test
@@ -330,6 +332,10 @@ erDiagram
     - start and complete task 1
     - `expect` goal 1 and objective 3 to be completed.
     - `expect` objective 1, objective 2 and goal 3 to remain un-completed.
+
+- `p_task_and_goal_trigger_test_3`: TODO, document this.
+
+- `p_task_calculate_worked_time_test_1`: TODO, document this.
 
 ### Miscellaneous
 
