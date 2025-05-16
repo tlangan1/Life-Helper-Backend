@@ -1,14 +1,18 @@
 +-----------------------------------------+---------------------+
 | test_results_line                       | created_dtm         |
 +-----------------------------------------+---------------------+
-| Beginning: task and goal trigger test 1 | 2025-05-05 14:01:50 |
-| SUCCESS: Initial Assertion Correct      | 2025-05-05 14:01:50 |
-| SUCCESS: Final Assertion Correct        | 2025-05-05 14:01:50 |
-| Beginning: task and goal trigger test 2 | 2025-05-05 14:01:51 |
-| SUCCESS: Initial Assertion Correct      | 2025-05-05 14:01:51 |
-| SUCCESS: Final Assertion Correct        | 2025-05-05 14:01:51 |
-| Beginning: calculate worked time test 1 | 2025-05-05 14:01:52 |
-| SUCCESS: Initial Assertion Correct      | 2025-05-05 14:01:52 |
-| SUCCESS: Next Assertion Correct         | 2025-05-05 14:01:54 |
-| SUCCESS: Final Assertion Correct        | 2025-05-05 14:01:54 |
+| Beginning: task and goal trigger test 1 | 2025-05-16 18:04:56 |
+| SUCCESS: Initial Assertion Correct      | 2025-05-16 18:04:56 |
+| SUCCESS: Final Assertion Correct        | 2025-05-16 18:04:56 |
+| Beginning: task and goal trigger test 2 | 2025-05-16 18:04:56 |
+| SUCCESS: Initial Assertion Correct      | 2025-05-16 18:04:56 |
+| SUCCESS: Final Assertion Correct        | 2025-05-16 18:04:56 |
+| Beginning: calculate worked time test 1 | 2025-05-16 18:04:57 |
+| SUCCESS: Initial Assertion Correct      | 2025-05-16 18:04:57 |
+| SUCCESS: Next Assertion Correct         | 2025-05-16 18:04:59 |
+| SUCCESS: Final Assertion Correct        | 2025-05-16 18:04:59 |
+| Beginning: task and goal trigger test 3 | 2025-05-16 18:04:59 |
+| SUCCESS: Initial Assertion Correct      | 2025-05-16 18:04:59 |
+| SUCCESS: Next Assertion Correct         | 2025-05-16 18:04:59 |
+| SUCCESS: Final Assertion Correct        | 2025-05-16 18:04:59 |
 +-----------------------------------------+---------------------+
