@@ -1,7 +1,7 @@
 # name: upgrade_or_create_environment.sh
 #
 # Use: ./upgrade_or_create_environment.sh <password> <schema>
-# Example: ./upgrade_or_create_environment.sh -UnderAWhiteSky1 test_life_helper
+# Example: ./upgrade_or_create_environment.sh -UnderSky1 test_life_helper
 # 
 # 1st Argument: password
 # 2nd Argument: schema to upgrade
@@ -15,6 +15,7 @@ echo "******************************************"
 # ******************************************
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+
 mysqldump -u tlangan -p$1 --routines --triggers "life_helper" > "dumps/life_helper.dump $timestamp.sql"
 
 if [ "$2" != "life_helper" ]; then
@@ -25,6 +26,9 @@ if [ "$2" != "life_helper" ]; then
     # Load the schema from the copy
     # ******************************************
     mysql -u tlangan -p$1 --comments $2 < "dumps/life_helper.dump $timestamp.sql"
+else
+    echo "If producion database does not exist then create."
+    ../scripts/run.sh "tlangan" $1 "sys" "create database $2 if not exists;"
 fi
 
 # ******************************************
