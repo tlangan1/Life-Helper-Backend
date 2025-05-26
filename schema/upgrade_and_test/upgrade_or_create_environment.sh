@@ -28,7 +28,7 @@ if [ "$2" != "life_helper" ]; then
     mysql -u tlangan -p$1 --comments $2 < "dumps/life_helper.dump $timestamp.sql"
 else
     echo "If producion database does not exist then create."
-    ../scripts/run.sh "tlangan" $1 "sys" "create database $2 if not exists;"
+    ../scripts/run.sh "tlangan" $1 "sys" "create database if not exists $2;"
 fi
 
 # ******************************************
