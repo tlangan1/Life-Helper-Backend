@@ -10,8 +10,10 @@
 # within the context of a wrapper script. It is not
 # intended to be used as a standalone script. 
 
+echo "$4"
+
 if [ -f "$4" ]; then
-    mysqlsh --mysqlx -u "$1" -p"$2" -h localhost -P 33060 --schema "$3" --file "$4"
+    mysql -u "$1" -p"$2" "$3" < "$4"
 else
-    mysqlsh --mysqlx -u "$1" -p"$2" -h localhost -P 33060 --sql --schema "$3" -e "$4"
+    mysql -u "$1" -p"$2" "$3" -e "$4"
 fi
