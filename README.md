@@ -254,13 +254,14 @@ erDiagram
     - 2nd parameter: test schema
     - 3rd parameter: the value `run_new_tests` causes the new tests, if any, to be run and the value `do_not_run_new_tests` prevents them from being run.
   - To run a baseline test to ensure that all existing database tests still pass with the given production data use the following:
-  ```
+  ```bash
   cd schema
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
   ```
   - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
-  ```
+  ```bash
+  cd schema
   cd upgrade_and_test
   ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
   ```
