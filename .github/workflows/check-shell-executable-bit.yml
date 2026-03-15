@@ -1,0 +1,43 @@
+name: Check shell executable bit
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check-shell-executable-bit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify all tracked .sh files are executable
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          bad_files="$(git ls-files --stage -- '*.sh' | awk -F '\t' '
+            {
+              split($1, meta, " ")
+              mode = meta[1]
+              path = $2
+              if (mode != "100755") {
+                printf "%s (%s)\n", path, mode
+                bad = 1
+              }
+            }
+            END {
+              if (bad) {
+                exit 1
+              }
+            }
+          ')"
+
+          if [[ -n "${bad_files}" ]]; then
+            echo "The following tracked .sh files are not executable (expected mode 100755):"
+            echo "${bad_files}"
+            exit 1
+          fi
+
+          echo "All tracked .sh files have mode 100755."
