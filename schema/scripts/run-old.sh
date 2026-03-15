@@ -1,3 +1,4 @@
+# I turned off the executable bit to test the github action protecting against allowing non-executable shell scripts. If you want to run it, you will need to turn the executable bit back on. 
 
 # to execute the script run ./run.sh $1 $2 $3
 
