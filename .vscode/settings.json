@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["errno", "Inno", "MSVC", "mysqlshrc", "pushpad", "redist"]
+  "cSpell.words": [
+    "errno",
+    "Inno",
+    "MSVC",
+    "mysqlshrc",
+    "pipefail",
+    "pushpad",
+    "redist"
+  ]
 }
