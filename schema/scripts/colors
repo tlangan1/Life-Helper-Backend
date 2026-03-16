@@ -1,0 +1,14 @@
+BEGIN {
+    esc = sprintf("%c", 27)
+    reset = esc "[0m"
+    bg_green = esc "[30;42m"
+    bg_red = esc "[30;41m"
+}
+
+function BG_GREEN(s) {
+    return bg_green s reset
+}
+
+function BG_RED(s) {
+    return bg_red s reset
+}

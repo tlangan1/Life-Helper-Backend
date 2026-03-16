@@ -30,5 +30,17 @@ echo " "
 echo "Test Results"
 
 # awk {print} test_results.txt
-awk -f ~/scripts/colors -e '/SUCCESS/ {$0 = BG_GREEN($0)} /FAILURE/ {$0 = BG_RED($0)} {print}' test_results.txt
-
+# awk -f ~/scripts/colors -e '/SUCCESS/ {$0 = BG_GREEN($0)} /FAILURE/ {$0 = BG_RED($0)} {print}' test_results.txt
+awk '
+BEGIN {
+  esc = sprintf("%c", 27)
+  reset = esc "[0m"
+  bg_green = esc "[30;42m"
+  bg_red = esc "[30;41m"
+}
+function BG_GREEN(s) { return bg_green s reset }
+function BG_RED(s)   { return bg_red s reset }
+/SUCCESS/ { $0 = BG_GREEN($0) }
+/FAILURE/ { $0 = BG_RED($0) }
+{ print }
+' test_results.txt
