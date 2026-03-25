@@ -125,8 +125,6 @@
     npm run prod_debug
     ```
 - `Life Helper Setup`
-  - Open the "Production-Clones/Life-Helper" in VSCode and make the following changes:
-    - Change the port in vite.config.js to 3002.
   - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
     ```
     npm run dev

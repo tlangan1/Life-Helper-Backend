@@ -9,7 +9,7 @@ create procedure p_task_calculate_worked_time_test_1()
 	BEGIN
     set @test_name = "calculate worked time test 1";
     select @test_name as running_test;
-    set @user_login_id = 2;
+    set @user_login_id = 4;
 
     insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	-- Create Objective 1
