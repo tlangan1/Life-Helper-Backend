@@ -29,6 +29,8 @@ mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --result-format=table --s
 echo " "
 echo "Test Results"
 
+# awk {print} test_results.txt
+# awk -f ~/scripts/colors -e '/SUCCESS/ {$0 = BG_GREEN($0)} /FAILURE/ {$0 = BG_RED($0)} {print}' test_results.txt
 awk '
 BEGIN {
   esc = sprintf("%c", 27)
@@ -42,4 +44,3 @@ function BG_RED(s)   { return bg_red s reset }
 /FAILURE/ { $0 = BG_RED($0) }
 { print }
 ' test_results.txt
-

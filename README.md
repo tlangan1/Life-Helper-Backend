@@ -119,7 +119,7 @@
 - The script in the [Development Environment](#development-environment) section of this document must have been executed after all changes have been made and have ran successfully.
 - Then the script in the [Production Environment](#production-environment) section of this document must be executed.
 - `Express Server Setup`
-  - Copy the certs directory from the local source into "Production-Clones/Express-Server". This will continue to be necessary as I do not want to store any certs on Github.
+  - Copy the certs directory from the local source into this "Production-Clones/Express-Server". This is necessary to prevent any certs from being stored on Github.
   - Open the "Production-Clones/Express-Server" directory in bash and execute the following command
     ```
     npm run prod_debug
@@ -127,7 +127,7 @@
 - `Life Helper Setup`
   - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
     ```
-    npm run dev_no_debug
+    npm run dev
     ```
     Use the no_debug launch so that one can still continue to debug the development version. There may be other ways to deal with the port conflict between debug sessions but this will work for now.
 - `Start the application`
