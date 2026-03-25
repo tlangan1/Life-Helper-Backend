@@ -119,15 +119,12 @@
 - The script in the [Development Environment](#development-environment) section of this document must have been executed after all changes have been made and have ran successfully.
 - Then the script in the [Production Environment](#production-environment) section of this document must be executed.
 - `Express Server Setup`
-  - Open the "Production-Clones/Express-Server" directory in VSCode.
-  - Copy the certs directory from the local source into this directory. This will continue to be necessary as I do not want to store any certs on Github.
+  - Copy the certs directory from the local source into "Production-Clones/Express-Server". This will continue to be necessary as I do not want to store any certs on Github.
   - Open the "Production-Clones/Express-Server" directory in bash and execute the following command
     ```
-    npm run prod
+    npm run prod_debug
     ```
 - `Life Helper Setup`
-  - Open the "Production-Clones/Life-Helper" in VSCode and make the following changes:
-    - Change the port in vite.config.js to 3002.
   - Open the "Production-Clones/Life-Helper" directory in bash and execute the following command.
     ```
     npm run dev_no_debug
@@ -245,7 +242,7 @@ erDiagram
   printf "In correct directory"
   cd schema
   cd upgrade_and_test
-  ./run_tests.sh -UnderAWhiteSky1 test_life_helper run_new_tests
+  ./run_tests.sh -UnderSky1 test_life_helper run_new_tests
   cd ../..
   ```
   - The test script calls the database upgrade script which rebuilds the entire schema
@@ -257,13 +254,13 @@ erDiagram
   ```bash
   cd schema
   cd upgrade_and_test
-  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
+  ./run_tests.sh -UnderSky1 test_life_helper do_not_run_new_tests
   ```
   - To create an empty life_helper schema from the scripts and run only the existing tests use the following:
   ```bash
   cd schema
   cd upgrade_and_test
-  ./run_tests.sh -UnderAWhiteSky1 test_life_helper do_not_run_new_tests
+  ./run_tests.sh -UnderSky1 test_life_helper do_not_run_new_tests
   ```
 - Finally, point the data server to the test_life_helper database to see how the application behaves against the new schema.
 - Notes:
@@ -277,7 +274,7 @@ erDiagram
   ```bash
   cd schema
   cd up*
-  ./upgrade_or_create_environment.sh -UnderAWhiteSky1 life_helper
+  ./upgrade_or_create_environment.sh -UnderSky1 life_helper
   cd ..
   cd ..
   ```
@@ -461,8 +458,8 @@ erDiagram
 
 - Use the following syntax to use mysqlsh from the command line
   - `mysqlsh --mysqlx -u tlangan -h localhost -P 33060` or `mysqlsh mysql://tlangan@localhost:3306`
-  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060`
-  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderAWhiteSky1 -h localhost -P 33060 --file [some sql file name]`.
+  - To pass the in the password use `mysqlsh --mysqlx -u tlangan -p-UnderSky1 -h localhost -P 33060`
+  - To execute a file in batch mode use the following syntax: `mysqlsh --mysqlx -u tlangan -p-UnderSky1 -h localhost -P 33060 --file [some sql file name]`.
   - To check the status of the connection enter `shell.status()`
   - To exit from the session enter `\quit`
 

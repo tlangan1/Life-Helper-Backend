@@ -2,3 +2,4 @@ node_modules
 root CA certificates
 **/*.dump*.sql
 *.txt
+commit_msg.md

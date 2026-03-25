@@ -9,7 +9,7 @@ create procedure p_task_and_goal_trigger_test_1()
 	BEGIN
     set @test_name = "task and goal trigger test 1";
     select @test_name as running_test;
-    set @user_login_id = 2;
+    set @user_login_id = 4;
 
     insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	-- Create Objective 1
