@@ -26,12 +26,14 @@ ON task FOR EACH ROW
         -- It ensures that if a goal relies on one or more tasks
         -- and at least one of them has been started then the goal should
         -- be in the started state. The logic is enforced as follows:
+		--		
 		-- A task has been started. If there are any goals for which 
         -- this is the first of their tasks to be started then
         -- the goal should be marked as started.
         -- Analogous logic is applied to the relationship between
         -- objectives and goals in the goal update trigger.
 
+		-- This is a commented out diagnostic line only, not a comment about the logic.
 		-- Insert into trigger_log (statement) select "In the started IF";
         
 		Create temporary table trigger_task_update_temp select g.goal_id from goal_task gt
@@ -49,12 +51,14 @@ ON task FOR EACH ROW
         -- It ensures that if a goal relies on one or more tasks and
         -- all of them have been completed then the goal should be in 
         -- the completed state. The logic is enforced as follows:
+		--
 		-- A task has been completed. If there are no other open tasks
         -- associated with any of the goals it applies to then each of
         -- those goals should be completed.
         -- Analogous logic is applied to the relationship between
         -- objectives and goals in the goal update trigger.
         
+		-- This is a commented out diagnostic line only, not a comment about the logic.
 		-- Insert into trigger_log (statement) select "In the completed IF";
 
 		-- open the cursor
@@ -69,6 +73,53 @@ ON task FOR EACH ROW
 			
 			IF @open_task_count = 0 THEN
 				update goal set completed_dtm = now() where goal_id = id;
+			END IF;
+			
+			FETCH cur_goals into id;
+		END WHILE;
+
+		-- close the cursor
+		CLOSE cur_goals;
+	END IF;
+
+    IF OLD.canceled_dtm is null AND NEW.canceled_dtm is not null THEN
+		-- This logic enforces the integrity of the data.
+        -- 
+        -- It ensures that if a goal relies on one or more tasks and
+        -- all of them have been canceled then the goal should be in 
+        -- the canceled state. The logic is enforced as follows:
+		--
+		-- A task has been canceled. If there are no other open tasks
+		-- associated with any of the goals it applies to then each of
+		-- those goals should be either canceled or completed. A goal
+		-- should be completed if any of its associated tasks are completed,
+		-- otherwise it should be canceled.
+        -- Analogous logic is applied to the relationship between
+        -- objectives and goals in the goal update trigger.
+        
+		-- This is a commented out diagnostic line only, not a comment about the logic.
+		-- Insert into trigger_log (statement) select "In the canceled IF";
+
+		-- open the cursor
+		OPEN cur_goals;
+		
+		FETCH cur_goals into id;
+		WHILE Not done DO
+			select count(*) into @open_task_count from goal_task gt inner join task t on gt.task_id = t.task_id
+			where gt.goal_id = id
+            and   t.completed_dtm Is Null
+			and   t.canceled_dtm Is Null;
+			
+			IF @open_task_count = 0 THEN
+				select count(*) into @completed_task_count from goal_task gt inner join task t on gt.task_id = t.task_id
+				where gt.goal_id = id
+				and   t.completed_dtm Is Not Null;
+
+				IF @completed_task_count > 0 THEN
+					update goal set completed_dtm = now() where goal_id = id;
+				ELSE
+					update goal set canceled_dtm = now() where goal_id = id;
+				END IF;
 			END IF;
 			
 			FETCH cur_goals into id;
