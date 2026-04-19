@@ -99,6 +99,81 @@ ON goal FOR EACH ROW
 		CLOSE cur_objectives;
     END IF;
 
+
+	-- a goal was canceled.
+    IF OLD.canceled_dtm is null AND NEW.canceled_dtm is not null THEN
+		-- This logic enforces the integrity of the data. It ensures
+        -- 
+        -- It ensures that if an objective relies on one or more goals and
+        -- all of them have been canceled then the objective should be in 
+        -- the canceled state. The logic is enforced as follows:
+		--
+		-- A goal has been canceled. If there are no other open goals
+		-- associated with any of the objectives it applies to then each of
+        -- those objectives should be either canceled or completed. An objective
+		-- should be completed if any of its associated goals are completed, otherwise
+		-- it should be canceled.
+        -- Analogous logic is applied to the relationship between
+        -- goals and tasks in the task update trigger.
+        
+		Insert into trigger_log (statement) select "In the completed IF";
+
+		-- open the cursor
+		OPEN cur_objectives;
+		
+		FETCH cur_objectives into id;
+		WHILE Not done DO
+			select count(*) into @open_goal_count from objective_goal og inner join goal g on og.goal_id = g.goal_id
+			where og.objective_id = id
+            and   g.completed_dtm Is Null
+			and   g.canceled_dtm Is Null;
+			
+			select count(*) into @completed_goal_count from objective_goal og inner join goal g on og.goal_id = g.goal_id
+			where og.objective_id = id
+			and   g.completed_dtm Is Not Null;
+			
+			IF @open_goal_count = 0 THEN
+				IF @completed_goal_count > 0 THEN
+					update objective set completed_dtm = now() where objective_id = id;
+				ELSE
+					update objective set canceled_dtm = now() where objective_id = id;
+				END IF;
+			END IF;
+			
+			FETCH cur_objectives into id;
+		END WHILE;
+
+		-- close the cursor
+		CLOSE cur_objectives;
+	END IF;
+
+	-- a goal was un-canceled.
+	IF OLD.canceled_dtm is not null AND NEW.canceled_dtm is null THEN
+		-- This logic enforces the integrity of the data. It ensures
+        -- 
+        -- It ensures that if an objective relies on one or more goals and
+        -- one of those goals is un-canceled then the objective should be
+		-- in the not canceled state. The logic is enforced as follows:
+		--
+		-- A goal has been un-canceled. If any objective it applies to is in the
+		-- canceled state then it should be un-canceled.
+        -- Analogous logic is applied to the relationship between
+        -- goals and tasks in the task update trigger.
+
+		OPEN cur_objectives;
+		
+		FETCH cur_objectives into id;
+		WHILE Not done DO
+            update objective set canceled_dtm = null where objective_id = id
+			and canceled_dtm is not null;
+			
+			FETCH cur_objectives into id;
+		END WHILE;
+
+		-- close the cursor
+		CLOSE cur_objectives;
+    END IF;
+
 	drop temporary table if exists trigger_goal_update_temp;
     END //
 
