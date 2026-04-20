@@ -3,6 +3,10 @@
 # to execute the script run ./load_triggers.sh -UnderAWhiteSky1 test_life_helper
 # The ./ is important
 # 
+# Exit immediately if any command fails
+set -e
+set -o pipefail
+#
 # 1st Argument: password
 # 2nd Argument: schema to create
 #

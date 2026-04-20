@@ -3,6 +3,10 @@
 # to execute the script run ./load_table_creation_sps.sh -UnderAWhiteSky1 <database>
 # The ./ is important
 # 
+# Exit immediately if any command fails
+set -e
+set -o pipefail
+#
 # 1st Parameter: password
 # 2nd Parameter: the schema in which to load the stored procedures
 

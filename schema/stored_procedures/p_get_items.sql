@@ -13,15 +13,11 @@ BEGIN
 		    create temporary table t1 as select objective_id as item_id, objective.*
             from objective
             where if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, objective_id = JSON_EXTRACT(data, '$.item_id'));
---      This branch is not used as of 5/4/2025
--- 		WHEN "objective" THEN
 		WHEN "goals" THEN
 			create temporary table t1 as select g.goal_id as item_id, g.*
 			from goal g inner join objective_goal og on g.goal_id = og.goal_id
 			where og.objective_id = JSON_EXTRACT(data, '$.parent_id')
             and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, g.goal_id = JSON_EXTRACT(data, '$.item_id'));
---      This branch is not used as of 5/4/2025
--- 		WHEN "goal" THEN
 		WHEN "tasks" THEN
 			if JSON_UNQUOTE(JSON_EXTRACT(data, '$.view')) = "my-tasks-view" THEN
 				create temporary table t1 as select t.task_id as item_id, t.*, tu.user_login_id
@@ -34,6 +30,7 @@ BEGIN
 				from task t inner join goal_task gt on t.task_id = gt.task_id
                 left outer join task_user tu on t.task_id = tu.task_id
 				where gt.goal_id = JSON_EXTRACT(data, '$.parent_id')
+                and tu.end_assignment_dtm Is Null
 				and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 			END IF;
 		WHEN "task" THEN
@@ -42,20 +39,21 @@ BEGIN
 			where t.task_id = JSON_EXTRACT(data, '$.item_id');
 		WHEN "subscriptions" THEN
 			select * from web_push_subscription where unsubscribed_or_expired_dtm Is Null;
---      This branch is not used as of 5/4/2025
--- 		WHEN "subscription" THEN
 		WHEN "notes" THEN
 			call p_get_notes(data);
---      This branch is not used as of 5/4/2025
--- 		WHEN "note" THEN
 		WHEN "thoughts" THEN
 			call p_get_thoughts(data);
---      This branch is not used as of 5/4/2025
--- 		WHEN "thought" THEN
---      This branch is not used as of 5/4/2025
--- 		WHEN "user_logins" THEN
 		WHEN "user_login" THEN
 			call p_get_user_login(data);
+		WHEN "user_logins" THEN
+			select ul.user_login_id, ul.full_name, ul.email_address, count(*) as workload
+			from user_login ul inner join task_user tu on ul.user_login_id = tu.user_login_id
+			inner join task t on tu.task_id = t.task_id
+			where ul.deleted_dtm Is Null
+			and tu.end_assignment_dtm Is Null
+			and   t.completed_dtm Is Null
+			and   t.canceled_dtm Is Null
+			group by ul.user_login_id, ul.full_name, ul.email_address;
 	END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		create temporary table t2 as select * from t1
