@@ -34,6 +34,11 @@ BEGIN
 				and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 			END IF;
 		WHEN "task" THEN
+			-- As of 04-24-2026 this is used in ProjectItemDetail.jsx to achieve a granular update of the task list
+			-- without refreshing the entire list. This need arises when the user starts, pauses, resumes, completes
+			-- or cancels a task.
+			-- There is no need for an analogous "objective" or "goal" endpoint because, once created, objectives and goals
+			-- are not updated by the user.
 			select t.task_id as item_id, t.*, tu.user_login_id
 			from task t left outer join task_user tu on t.task_id = tu.task_id
 			where t.task_id = JSON_EXTRACT(data, '$.item_id');
@@ -54,6 +59,10 @@ BEGIN
 			and   t.completed_dtm Is Null
 			and   t.canceled_dtm Is Null
 			group by ul.user_login_id, ul.full_name, ul.email_address;
+		WHEN "search" THEN
+			call p_search_items(data);
+		ELSE
+		    select null;
 	END CASE;
     if type = "objectives" or type = "goals" or type = "tasks" THEN
 		create temporary table t2 as select * from t1
