@@ -63,6 +63,12 @@ echo "******************************************"
 
 ../stored_procedures/load_stored_procedures.sh $1 $2
 
+echo "******************************************"
+echo " loading functions"
+echo "******************************************"
+
+../functions/load_functions.sh $1 $2
+
 # ******************************************
 # Load all migration scripts
 # ******************************************

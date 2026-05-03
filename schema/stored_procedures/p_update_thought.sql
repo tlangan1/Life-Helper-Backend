@@ -12,7 +12,6 @@ BEGIN
 			update thought set thought = JSON_UNQUOTE(JSON_EXTRACT(data, '$.thought'))
             where thought_id = JSON_EXTRACT(data, '$.thought_id');
 	END CASE;
-    commit;
 END //
 
 DELIMITER ;

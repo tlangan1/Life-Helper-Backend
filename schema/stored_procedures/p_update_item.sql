@@ -5,14 +5,13 @@ CREATE PROCEDURE p_update_item(IN item_type varchar(30), IN data JSON)
 BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN
-            -- I believe this is the correct way to guarantee all transactions are resolved
-            -- with either a commit or rollback as this handler catches all SQL exceptions.
+			-- This handler rolls back the transaction for unhandled SQL exceptions in this procedure.
+			-- That guarantee only holds if called procedures do not commit or roll back independently.            
 			GET STACKED DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 				@errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
             rollback;
-            
-            -- Always make sure the rollback proceeds the error logging.
-            -- Otherwise, the error logging will also be rolled back.
+
+            -- The rollback must proceed the error logging so the error logging is not rolled back.
             SET @error_information = JSON_OBJECT('error_number', @errno, 'sql_state', @sqlstate, 'error_text', @text);
 			SET @params = JSON_OBJECT('sp_name', 'p_update_item', 'error_information', @error_information, 'additional_information', data);
 			call p_handle_db_error(@params);

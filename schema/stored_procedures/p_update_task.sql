@@ -5,7 +5,8 @@ CREATE PROCEDURE p_update_task(IN data JSON)
 BEGIN
 	Set @update_type = JSON_UNQUOTE(JSON_EXTRACT(data, '$.update_type'));
 	set @task_id = JSON_EXTRACT(data, '$.item_id');
-	set @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
+	-- this is a big deal...see the BUILDING-AND-EXTRACTING-JSON.md file for more details on why this is necessary.
+	set @user_login_id = CAST(JSON_EXTRACT(data, '$.user_login_id') AS UNSIGNED);
 
 	CASE @update_type
 		WHEN "start" THEN
@@ -43,6 +44,13 @@ BEGIN
             where task_id = @task_id
             and stopped_work_dtm Is Null;
 	END CASE;
+
+	CALL p_get_user_working_status_today(
+		@user_login_id,
+		@user_working,
+		@elapsed_work_time
+	);
+	select @user_working as user_working, @elapsed_work_time as elapsed_work_time;
 END //
 
 DELIMITER ;
