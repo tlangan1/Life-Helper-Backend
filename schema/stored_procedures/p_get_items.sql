@@ -30,8 +30,8 @@ BEGIN
 				from task t inner join goal_task gt on t.task_id = gt.task_id
                 left outer join task_user tu on t.task_id = tu.task_id
 				where gt.goal_id = JSON_EXTRACT(data, '$.parent_id')
-                and tu.end_assignment_dtm Is Null
-				and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
+                and tu.end_assignment_dtm Is Null;
+				-- and if(JSON_EXTRACT(data, '$.item_id') Is Null, 1 = 1, t.task_id = JSON_EXTRACT(data, '$.item_id'));
 			END IF;
 		WHEN "task" THEN
 			-- As of 04-24-2026 this is used in ProjectItemDetail.jsx to achieve a granular update of the task list
@@ -61,6 +61,15 @@ BEGIN
 			group by ul.user_login_id, ul.full_name, ul.email_address;
 		WHEN "search" THEN
 			call p_search_items(data);
+		WHEN "user_working_status_today" THEN
+			SET @user_login_id = JSON_EXTRACT(data, '$.user_login_id');
+			CALL p_get_user_working_status_today(
+				@user_login_id,
+				@user_working,
+				@elapsed_work_time
+			);
+			SELECT @user_working AS user_working,
+				@elapsed_work_time AS elapsed_work_time;
 		ELSE
 		    select null;
 	END CASE;

@@ -10,8 +10,8 @@ BEGIN
 	-- This parameter is optional
 	Set @user_login_id = JSON_UNQUOTE(JSON_EXTRACT(data, '$.user_login_id'));
 
-	-- Get a list of work_log records whose started_work_dtm and stopped_work_dtm
-    -- overlap the time frame defined by @start_dtm and @end_dtm.
+	-- The window of time under consideration is defined by @start_dtm and @end_dtm.
+	-- Get a list of work_log records that overlap with this window.
     drop table if exists relevant_work_log_rows;
     
     create temporary table relevant_work_log_rows SELECT user_login_id, started_work_dtm, Ifnull(stopped_work_dtm, now()) as stopped_work_dtm
@@ -21,9 +21,14 @@ BEGIN
     and user_login_id = IFNULL(@user_login_id, user_login_id);
 
 
-
--- IFNULL(sum(timestampdiff(second, @start_dtm, stopped_work_dtm ))/60/60, 0) as case_1_total
-
+	-- We want to calculate the amount of time spent working during that window
+	-- for these relevant work_log records. There are several cases to consider:
+	-- Case 1: work starts before @start_dtm and ends after @start_dtm but before @end_dtm.
+	-- That is, the work started on or before the start of the window and ended during the window.
+	-- Case 2: work starts after @start_dtm but before @end_dtm
+	-- That is, the work started during the window and ended on or after the end of the window.
+	-- Case 3: work starts after @start_dtm and ends before @end_dtm
+	-- That is, the work started and ended within the window.
     drop table if exists case_1_rows;
 	    
     create temporary table case_1_rows select user_login_id
@@ -51,17 +56,10 @@ BEGIN
 	drop table if exists all_rows;
 	create temporary table all_rows select * from case_1_rows union select * from case_2_rows union select * from case_3_rows;
 
-	-- select sum(elapsed_work_time)/60/60 into elapsed_work_time from all_rows;
-	-- group by user_login_id;
-    
-    -- set elapsed_work_time = 10;
     select sum(elapsed_work_time)/60/60 into total_elapsed_work_time from all_rows group by user_login_id;
 
 	IF total_elapsed_work_time Is NUll THEN
 		set total_elapsed_work_time = 0;
 	END IF;
-    
--- 	select user_login_id, sum(elapsed_work_time)/60/60 as total_elapsed_work_time from all_rows
--- 	group by user_login_id;
 END //
 DELIMITER ;

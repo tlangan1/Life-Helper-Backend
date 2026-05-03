@@ -156,7 +156,7 @@ When the schema changes, apply and test it in `test_life_helper` first.
 
 #### Step 1: Update scripts and tests
 
-- Update the relevant scripts for changed tables, stored procedures, triggers, foreign keys, and other database objects.
+- Update the relevant scripts for changed tables, stored procedures, functions, triggers, foreign keys, and other database objects.
 - New objects only need creation scripts in the correct directories; the load scripts handle execution.
 - If existing test objects need to change, update `load_existing_test_objects.sh`.
 - If new tests are added, update `load_new_test_objects.sh` and `run_new_test.sh` as needed.
@@ -540,6 +540,7 @@ The intent is to prevent raw database errors from being returned directly to the
   - transfer it to the phone
   - open `Settings > Security and privacy > More security settings > Install from phone storage > CA certificate`
   - click `Install Anyway`, enter a PIN if needed, and select the certificate file
+    git
 
 - If the front end web server is running on Linux, the Vite SSL certificate references the Linux-created root CA certificate.
 - If the front end web server is running on Windows, the Vite SSL certificate references the Windows-created root CA certificate.

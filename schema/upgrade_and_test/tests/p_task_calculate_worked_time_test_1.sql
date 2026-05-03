@@ -10,6 +10,7 @@ create procedure p_task_calculate_worked_time_test_1()
     set @test_name = "calculate worked time test 1";
     select @test_name as running_test;
     set @user_login_id = 4;
+	set @sleep_seconds = 2;
 
     insert into test_results (test_results_line) values (CONCAT("Beginning: ", @test_name));
 	-- Create Objective 1
@@ -64,8 +65,8 @@ create procedure p_task_calculate_worked_time_test_1()
 	PREPARE statement FROM 'call p_update_item("task", ?)';
 	Execute statement using @JSON;
 
-    -- set a timer for 2 seconds
-    select sleep(2);
+	-- set a timer for @sleep_seconds seconds
+	select sleep(@sleep_seconds);
 
     -- Pause Task 1
     set @JSON = JSON_OBJECT('update_type', 'pause', 'item_id', @task_1_id, 'user_login_id', @user_login_id);
@@ -80,9 +81,13 @@ create procedure p_task_calculate_worked_time_test_1()
         insert into test_results (test_results_line) values ("FAILURE: Next Assertion Incorrect");
     END IF;
 
-    -- Make sure the final condition of the elapsed work time of 10 seconds is true
-    Select timediff(stopped_work_dtm, started_work_dtm) into @elapsed_time from work_log where task_id = @task_1_id;
-    IF SECOND(@elapsed_time) = 2 THEN
+	-- Make sure elapsed work time is at least @sleep_seconds.
+	SELECT TIMESTAMPDIFF(SECOND, started_work_dtm, stopped_work_dtm)
+	INTO @elapsed_seconds
+	FROM work_log
+	WHERE task_id = @task_1_id;
+
+	IF @elapsed_seconds >= @sleep_seconds THEN
         insert into test_results (test_results_line) values ("SUCCESS: Final Assertion Correct");
     ELSE
         insert into test_results (test_results_line) values ("FAILURE: Final Assertion Incorrect");

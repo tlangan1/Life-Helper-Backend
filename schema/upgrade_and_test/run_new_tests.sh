@@ -13,3 +13,4 @@ set -o pipefail
 ######################################################
 
 mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file tests/run_test_script_5.sql || { echo "Error running run_test_script_5.sql"; exit 1; }
+mysqlsh --mysqlx -u tlangan -p$1 -h localhost -P 33060 --schema $2 --file tests/run_test_script_6.sql || { echo "Error running run_test_script_6.sql"; exit 1; }
